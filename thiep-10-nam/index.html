@@ -421,16 +421,14 @@
     <p id="chuThichPhim"></p>
     <div class="chamTron" id="chamTron"></div>
 
-    <!-- Nhạc nền ngay trong màn xem ảnh -->
+    <!-- Nhạc nền ngay trong màn xem ảnh (điều khiển được bằng code) -->
     <div class="khungNhacPhim">
-      <iframe
-        src="https://open.spotify.com/embed/track/1ZjICQJECU0rO8Vf6AOVbv"
-        width="100%" height="80" frameborder="0"
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
-      </iframe>
+      <div id="khungSpotify"></div>
     </div>
   </div>
+
+  <!-- Bộ điều khiển Spotify chính thức -->
+  <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 
   <script>
     /* ===================================================
@@ -488,6 +486,37 @@
       if (e.target.closest(".khungNhac")) return;
       keuTach();
     });
+
+    /* ===================================================
+       ĐIỀU KHIỂN NHẠC SPOTIFY
+       =================================================== */
+    let dieuKhienNhac = null;     // bộ điều khiển, có sau khi Spotify sẵn sàng
+    let nhacDaChay = false;       // đã bấm play lần nào chưa
+
+    // Spotify tự gọi hàm này khi công cụ của họ tải xong
+    window.onSpotifyIframeApiReady = function (API) {
+      const khung = document.getElementById("khungSpotify");
+      API.createController(
+        khung,
+        {
+          uri: "spotify:track:1ZjICQJECU0rO8Vf6AOVbv",
+          width: "100%",
+          height: 80
+        },
+        function (bo) { dieuKhienNhac = bo; }
+      );
+    };
+
+    function batNhac() {
+      if (!dieuKhienNhac) return;
+      // Lần đầu dùng play(), các lần sau dùng resume() để chạy tiếp chỗ cũ
+      if (nhacDaChay) { dieuKhienNhac.resume(); }
+      else { dieuKhienNhac.play(); nhacDaChay = true; }
+    }
+
+    function tatNhac() {
+      if (dieuKhienNhac) dieuKhienNhac.pause();
+    }
 
     /* ---------- DỮ LIỆU: chú thích từng ảnh ---------- */
     const chuThich = [
@@ -559,11 +588,13 @@
       document.getElementById("manPhim").classList.add("hien");
       hienAnh(anhHienTai);
       batHenGio();
+      batNhac();        // mở xem ảnh -> nhạc tự chạy
     }
 
     function dongPhim() {
       document.getElementById("manPhim").classList.remove("hien");
       clearInterval(henGio);
+      tatNhac();        // đóng lại -> nhạc tự tắt
     }
 
     function hienAnh(chiSo) {
