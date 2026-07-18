@@ -400,7 +400,8 @@
 
     <div class="the cuonHien">
       <p class="tieuDeNho">Thước phim kỷ niệm</p>
-      <video id="video1" controls onerror="baoThieu('video1','videoChuaCo')">
+      <video id="video1" controls playsinline webkit-playsinline
+             preload="metadata" onerror="baoThieu('video1','videoChuaCo')">
         <source src="video1.mp4" type="video/mp4">
       </video>
       <div id="videoChuaCo" style="display:none;">
