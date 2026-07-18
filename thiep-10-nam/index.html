@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Yêu cầu các công cụ tìm kiếm KHÔNG lập chỉ mục trang này -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>Gửi Ruby 10 năm sau</title>
+
+  <style>
+    /* ===============================================
+       BẢNG MÀU (đổi ở đây là đổi cả trang)
+       =============================================== */
+    :root {
+      --hong-nhat: #ffeef2;
+      --hong-vua:  #ffd3dd;
+      --hong-dam:  #ff7a94;
+      --san-ho:    #ff5c7c;
+      --trang:     #ffffff;
+      --chu-dam:   #4a3540;
+      --chu-nhat:  #9b8791;
+
+      --bong-nhe: 0 8px 24px rgba(255, 122, 148, 0.18);
+      --bong-vua: 0 16px 40px rgba(255, 122, 148, 0.22);
+      --bong-sau: 0 24px 60px rgba(255, 122, 148, 0.28);
+
+      --bo-goc: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--chu-dam);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background:
+        radial-gradient(ellipse 700px 500px at 15% 20%, rgba(255,255,255,0.55), transparent 60%),
+        radial-gradient(ellipse 600px 700px at 85% 75%, rgba(255,255,255,0.4), transparent 60%),
+        linear-gradient(150deg, var(--hong-nhat) 0%, var(--hong-vua) 55%, #ffc2d1 100%);
+      background-attachment: fixed;
+    }
+
+    /* ===============================================
+       MÀN 1: PHONG BÌ (có hiệu ứng mở 3D)
+       =============================================== */
+    #manPhongBi {
+      text-align: center;
+      animation: hienLen 1s ease;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #manPhongBi.bienMat {
+      opacity: 0;
+      transform: scale(0.85);
+      pointer-events: none;
+    }
+
+    #chuNgoaiBia {
+      font-size: 34px;
+      font-weight: 600;
+      margin: 0 0 44px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--hong-dam), var(--san-ho));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Khung tạo chiều sâu 3D cho nắp lật */
+    .khungPhongBi { perspective: 1400px; margin-bottom: 40px; }
+
+    .phongBi {
+      width: 330px;
+      height: 220px;
+      margin: 0 auto;
+      position: relative;
+      cursor: pointer;
+      animation: trooiNhe 4s ease-in-out infinite;
+      transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+    .phongBi:hover { transform: translateY(-8px) scale(1.03); }
+    .phongBi.dangMo { animation: none; }
+
+    /* Thân phong bì */
+    .thanPhongBi {
+      position: absolute;
+      inset: 0;
+      background: var(--trang);
+      border-radius: var(--bo-goc);
+      box-shadow: var(--bong-sau);
+      z-index: 1;
+    }
+
+    /* Lá thư bên trong — trượt lên khi mở */
+    .laThu {
+      position: absolute;
+      left: 26px; right: 26px;
+      bottom: 18px;
+      height: 165px;
+      background: linear-gradient(160deg, #fff, var(--hong-nhat));
+      border-radius: 18px;
+      box-shadow: 0 6px 20px rgba(255, 122, 148, 0.25);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      transition: transform 1s cubic-bezier(0.3, 1.2, 0.5, 1) 0.55s;
+    }
+    .phongBi.dangMo .laThu { transform: translateY(-150px) scale(1.06); }
+
+    /* Nắp phong bì — lật lên 180 độ */
+    .napPhongBi {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 126px;
+      background: linear-gradient(135deg, var(--hong-dam), var(--san-ho));
+      border-radius: var(--bo-goc) var(--bo-goc) 50% 50% / var(--bo-goc) var(--bo-goc) 76px 76px;
+      transform-origin: top center;
+      transition: transform 0.85s cubic-bezier(0.6, -0.2, 0.4, 1.2);
+      z-index: 3;
+      backface-visibility: hidden;
+    }
+    .phongBi.dangMo .napPhongBi { transform: rotateX(-175deg); }
+
+    /* Mép trước phong bì — che lá thư lúc đầu */
+    .mepTruoc {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 112px;
+      background: linear-gradient(180deg, #fff5f8, var(--trang));
+      border-radius: 0 0 var(--bo-goc) var(--bo-goc);
+      box-shadow: 0 -4px 14px rgba(255, 122, 148, 0.12);
+      z-index: 4;
+    }
+
+    .niemPhong {
+      position: absolute;
+      top: 96px; left: 50%;
+      transform: translateX(-50%);
+      width: 62px; height: 62px;
+      background: var(--trang);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: var(--bong-nhe);
+      z-index: 5;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .phongBi.dangMo .niemPhong { opacity: 0; transform: translateX(-50%) scale(0.4); }
+
+    .goiY { font-size: 15px; color: var(--chu-nhat); margin: 0; }
+
+    /* ===============================================
+       PHÁO GIẤY
+       =============================================== */
+    #phaoGiay {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 90;
+      overflow: hidden;
+    }
+    .manh {
+      position: absolute;
+      font-size: 22px;
+      animation: bayPhao 2.6s cubic-bezier(0.15, 0.6, 0.4, 1) forwards;
+    }
+
+    /* ===============================================
+       MÀN 2: NỘI DUNG
+       =============================================== */
+    #manNoiDung {
+      display: none;
+      width: 100%;
+      max-width: 920px;
+      animation: hienLen 1.1s ease;
+    }
+
+    .the {
+      background: var(--trang);
+      border-radius: var(--bo-goc);
+      box-shadow: var(--bong-vua);
+      padding: 48px 44px;
+      margin-bottom: 32px;
+    }
+
+    #loiNhan {
+      font-size: 54px; font-weight: 700;
+      margin: 0 0 10px; text-align: center; letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--hong-dam), var(--san-ho));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ngayThang { text-align: center; font-size: 15px; color: var(--chu-nhat); margin: 0; }
+
+    .loiNhanDai {
+      max-width: 620px; margin: 30px auto 0;
+      text-align: center; font-size: 17px; line-height: 1.95;
+      padding-top: 26px; border-top: 2px solid var(--hong-nhat);
+    }
+
+    /* Nút "Xem như phim" */
+    .nutPhim {
+      display: block;
+      margin: 34px auto 0;
+      padding: 17px 44px;
+      font-size: 17px; font-weight: 600;
+      font-family: inherit;
+      color: var(--trang);
+      background: linear-gradient(135deg, var(--hong-dam), var(--san-ho));
+      border: none; border-radius: 999px;
+      cursor: pointer;
+      box-shadow: var(--bong-vua);
+      transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s ease;
+    }
+    .nutPhim:hover { transform: translateY(-4px) scale(1.04); box-shadow: var(--bong-sau); }
+
+    /* Khung nhạc trong màn xem ảnh */
+    .khungNhacPhim {
+      position: absolute;
+      bottom: 22px; left: 50%;
+      transform: translateX(-50%);
+      width: 92%; max-width: 420px;
+    }
+    .khungNhacPhim iframe {
+      border-radius: 14px;
+      display: block;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.4);
+    }
+
+    .tieuDeNho {
+      font-size: 13px; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--hong-dam);
+      margin: 0 0 22px; text-align: center;
+    }
+
+    video { width: 100%; border-radius: 20px; display: block; box-shadow: var(--bong-nhe); }
+
+    .luoiAnh {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 22px;
+    }
+
+    .khungAnh {
+      background: var(--trang); border-radius: 22px; overflow: hidden;
+      box-shadow: var(--bong-nhe); cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.35s ease;
+    }
+    .khungAnh:hover { transform: translateY(-10px); box-shadow: var(--bong-sau); }
+    .khungAnh img { width: 100%; height: 190px; object-fit: cover; display: block; }
+
+    .chuThich {
+      margin: 0; padding: 15px 14px 18px; text-align: center;
+      font-size: 14px; color: var(--chu-nhat); min-height: 20px;
+    }
+
+    .chuaCo, #videoChuaCo {
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; color: var(--chu-nhat); font-size: 13px;
+      line-height: 1.6; padding: 16px;
+      background: var(--hong-nhat); border-radius: 20px;
+    }
+    .chuaCo { height: 190px; }
+    #videoChuaCo { height: 320px; font-size: 15px; }
+
+    /* ===============================================
+       CHẾ ĐỘ XEM NHƯ PHIM (toàn màn hình)
+       =============================================== */
+    #manPhim {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 100;
+      background: linear-gradient(150deg, #3a2028, #6b3444 60%, #8f3f56);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+    #manPhim.hien { display: flex; }
+
+    #anhPhim {
+      max-width: 90vw; max-height: 66vh;
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #anhPhim.dangDoi { opacity: 0; transform: scale(1.05); }
+
+    #chuThichPhim {
+      color: #fff; font-size: 24px; margin-top: 30px;
+      text-align: center; min-height: 34px;
+      transition: opacity 0.7s ease;
+    }
+    #chuThichPhim.dangDoi { opacity: 0; }
+
+    .chamTron { margin-top: 26px; display: flex; gap: 11px; }
+    .cham {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transition: all 0.35s ease; cursor: pointer;
+    }
+    .cham.dangXem { background: #fff; width: 30px; border-radius: 999px; }
+
+    .nutDieuKhien {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.14);
+      color: #fff; border: none;
+      width: 54px; height: 54px; border-radius: 50%;
+      font-size: 22px; cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .nutDieuKhien:hover { background: rgba(255,255,255,0.3); }
+    #nutTruoc { left: 26px; }
+    #nutSau   { right: 26px; }
+
+    #nutDong {
+      position: absolute; top: 26px; right: 26px;
+      background: rgba(255,255,255,0.14); color: #fff;
+      border: none; width: 48px; height: 48px; border-radius: 50%;
+      font-size: 22px; cursor: pointer;
+    }
+    #nutDong:hover { background: rgba(255,255,255,0.3); }
+
+    #baoNhac {
+      position: absolute; bottom: 26px; left: 26px;
+      color: rgba(255,255,255,0.6); font-size: 13px;
+    }
+
+    /* ===============================================
+       HIỆU ỨNG CHUNG
+       =============================================== */
+    @keyframes hienLen {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes trooiNhe {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-14px); }
+    }
+    @keyframes bayPhao {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) rotate(var(--xoay)) scale(0.5); opacity: 0; }
+    }
+
+    .cuonHien { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .cuonHien.daHien { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .the { padding: 32px 22px; }
+      #loiNhan { font-size: 38px; }
+      #chuNgoaiBia { font-size: 26px; }
+      .phongBi { width: 100%; max-width: 330px; }
+      #chuThichPhim { font-size: 18px; }
+      .nutDieuKhien { width: 44px; height: 44px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Lớp pháo giấy -->
+  <div id="phaoGiay"></div>
+
+  <!-- ===== MÀN 1: PHONG BÌ ===== -->
+  <div id="manPhongBi">
+    <p id="chuNgoaiBia">helo m đây là kho báu</p>
+
+    <div class="khungPhongBi">
+      <div class="phongBi" id="phongBi" onclick="moThiep()">
+        <div class="thanPhongBi"></div>
+        <div class="laThu">💌</div>
+        <div class="mepTruoc"></div>
+        <div class="napPhongBi"></div>
+        <div class="niemPhong">💗</div>
+      </div>
+    </div>
+
+    <p class="goiY">Bấm vào phong bì để mở</p>
+  </div>
+
+  <!-- ===== MÀN 2: NỘI DUNG ===== -->
+  <div id="manNoiDung">
+
+    <div class="the cuonHien">
+      <h1 id="loiNhan">sweet memori</h1>
+      <p class="ngayThang">Gửi Ruby — mở lại sau 10 năm 💗</p>
+      <p class="loiNhanDai">
+        hihi tui iêu 124 nhìu lắm, cạm ơn đã gặp, đã sống chung, đã ăn cùng nhau
+        và đi qua bao nhiêu mùa sinh nhật. Chúng m là những người bạn đầu tiên ở
+        Neu cụa t. Chúc mí đứa sau phại giàu có và hạnh phúc nhe, iuu 💗
+      </p>
+      <button class="nutPhim" onclick="moPhim()">click vào đây nè</button>
+    </div>
+
+    <div class="the cuonHien">
+      <p class="tieuDeNho">Thước phim kỷ niệm</p>
+      <video id="video1" controls onerror="baoThieu('video1','videoChuaCo')">
+        <source src="video1.mp4" type="video/mp4">
+      </video>
+      <div id="videoChuaCo" style="display:none;">
+        Chưa có video.<br>Bỏ file <b>video1.mp4</b> vào thư mục rồi tải lại trang (F5).
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== CHẾ ĐỘ XEM NHƯ PHIM ===== -->
+  <div id="manPhim">
+    <button id="nutDong" onclick="dongPhim()">✕</button>
+    <button class="nutDieuKhien" id="nutTruoc" onclick="chuyenAnh(-1)">‹</button>
+    <button class="nutDieuKhien" id="nutSau" onclick="chuyenAnh(1)">›</button>
+
+    <img id="anhPhim" src="" alt="">
+    <p id="chuThichPhim"></p>
+    <div class="chamTron" id="chamTron"></div>
+
+    <!-- Nhạc nền ngay trong màn xem ảnh -->
+    <div class="khungNhacPhim">
+      <iframe
+        src="https://open.spotify.com/embed/track/1ZjICQJECU0rO8Vf6AOVbv"
+        width="100%" height="80" frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <script>
+    /* ===================================================
+       ÂM THANH CLICK — tự tạo bằng code, không cần file
+       =================================================== */
+    let hopAmThanh = null;
+
+    function moHopAmThanh() {
+      if (!hopAmThanh) {
+        hopAmThanh = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      // Trình duyệt hay "ngủ đông" hộp âm thanh, phải đánh thức
+      if (hopAmThanh.state === "suspended") hopAmThanh.resume();
+      return hopAmThanh;
+    }
+
+    // Phát 1 nốt: tần số (Hz), độ dài (giây), độ to (0-1)
+    function phatNot(tanSo, doDai, doTo, treTho) {
+      const ctx = moHopAmThanh();
+      const batDau = ctx.currentTime + (treTho || 0);
+
+      const song = ctx.createOscillator();   // bộ tạo sóng âm
+      const amLuong = ctx.createGain();      // bộ chỉnh to nhỏ
+
+      song.type = "sine";                    // sóng sin: tiếng tròn, êm tai
+      song.frequency.setValueAtTime(tanSo, batDau);
+      song.frequency.exponentialRampToValueAtTime(tanSo * 0.75, batDau + doDai);
+
+      // Vào nhanh, tắt dần -> nghe như tiếng "tách" mềm
+      amLuong.gain.setValueAtTime(0.0001, batDau);
+      amLuong.gain.exponentialRampToValueAtTime(doTo, batDau + 0.012);
+      amLuong.gain.exponentialRampToValueAtTime(0.0001, batDau + doDai);
+
+      song.connect(amLuong);
+      amLuong.connect(ctx.destination);
+      song.start(batDau);
+      song.stop(batDau + doDai + 0.02);
+    }
+
+    // Tiếng click thường
+    function keuTach() {
+      phatNot(880, 0.09, 0.14);
+    }
+
+    // Tiếng mở thiệp: 3 nốt đi lên như tiếng chuông vui
+    function keuMoThiep() {
+      phatNot(659, 0.16, 0.16, 0);      // Mi
+      phatNot(784, 0.16, 0.16, 0.09);   // Sol
+      phatNot(1047, 0.42, 0.18, 0.18);  // Đô cao
+    }
+
+    // Gắn tiếng click cho MỌI cú bấm trên trang
+    document.addEventListener("click", function (e) {
+      // Bỏ qua khung nhạc Spotify (nó có tiếng riêng)
+      if (e.target.closest(".khungNhac")) return;
+      keuTach();
+    });
+
+    /* ---------- DỮ LIỆU: chú thích từng ảnh ---------- */
+    const chuThich = [
+      "hihi sn hannie 20 tuỗi",
+      "quảng bình với chị iem",
+      "lại quảng bình nè",
+      "hồi đi chơi chia tay",
+      ""
+    ];
+    const SO_ANH = 5;
+
+    /* ---------- MỞ THIỆP + PHÁO GIẤY ---------- */
+    function moThiep() {
+      const pb = document.getElementById("phongBi");
+      if (pb.classList.contains("dangMo")) return;   // tránh bấm 2 lần
+      pb.classList.add("dangMo");
+
+      keuMoThiep();                                   // tiếng chuông mở thiệp
+      banPhao();                                      // pháo giấy bắn ngay
+
+      setTimeout(function () {                        // chờ nắp lật + thư trượt xong
+        document.getElementById("manPhongBi").classList.add("bienMat");
+      }, 1500);
+
+      setTimeout(function () {
+        document.getElementById("manPhongBi").style.display = "none";
+        document.getElementById("manNoiDung").style.display = "block";
+        batTheoDoiCuon();
+      }, 2200);
+    }
+
+    function banPhao() {
+      const khung = document.getElementById("phaoGiay");
+      const hinh = ["💗", "💕", "🎉", "✨", "💖", "🎊", "🩷"];
+
+      for (let i = 0; i < 70; i++) {
+        const m = document.createElement("span");
+        m.className = "manh";
+        m.textContent = hinh[Math.floor(Math.random() * hinh.length)];
+        // bắn ra từ giữa màn hình
+        m.style.left = "50%";
+        m.style.top  = "50%";
+        m.style.setProperty("--dx",   (Math.random() * 900 - 450) + "px");
+        m.style.setProperty("--dy",   (Math.random() * 800 - 250) + "px");
+        m.style.setProperty("--xoay", (Math.random() * 720 - 360) + "deg");
+        m.style.fontSize = (14 + Math.random() * 22) + "px";
+        m.style.animationDelay = (Math.random() * 0.35) + "s";
+        khung.appendChild(m);
+        setTimeout(function () { m.remove(); }, 3200);
+      }
+    }
+
+    /* ---------- CHẾ ĐỘ XEM NHƯ PHIM ---------- */
+    let anhHienTai = 0;
+    let henGio = null;
+    const GIAY_MOI_ANH = 4000;
+
+    // tạo các chấm tròn chỉ vị trí
+    const khungCham = document.getElementById("chamTron");
+    for (let i = 0; i < SO_ANH; i++) {
+      const c = document.createElement("div");
+      c.className = "cham";
+      c.onclick = function () { hienAnh(i); batHenGio(); };
+      khungCham.appendChild(c);
+    }
+
+    function moPhim(batDauTu) {
+      anhHienTai = (typeof batDauTu === "number") ? batDauTu : 0;
+      document.getElementById("manPhim").classList.add("hien");
+      hienAnh(anhHienTai);
+      batHenGio();
+    }
+
+    function dongPhim() {
+      document.getElementById("manPhim").classList.remove("hien");
+      clearInterval(henGio);
+    }
+
+    function hienAnh(chiSo) {
+      anhHienTai = (chiSo + SO_ANH) % SO_ANH;   // quay vòng
+      const anh = document.getElementById("anhPhim");
+      const chu = document.getElementById("chuThichPhim");
+
+      anh.classList.add("dangDoi");
+      chu.classList.add("dangDoi");
+
+      setTimeout(function () {
+        anh.src = "anh" + (anhHienTai + 1) + ".jpg";
+        chu.textContent = chuThich[anhHienTai];
+        anh.classList.remove("dangDoi");
+        chu.classList.remove("dangDoi");
+      }, 350);
+
+      // cập nhật chấm tròn
+      document.querySelectorAll(".cham").forEach(function (c, i) {
+        c.classList.toggle("dangXem", i === anhHienTai);
+      });
+    }
+
+    function chuyenAnh(buoc) {
+      hienAnh(anhHienTai + buoc);
+      batHenGio();      // bấm tay thì đếm lại từ đầu
+    }
+
+    function batHenGio() {
+      clearInterval(henGio);
+      henGio = setInterval(function () { hienAnh(anhHienTai + 1); }, GIAY_MOI_ANH);
+    }
+
+    // Điều khiển bằng bàn phím
+    document.addEventListener("keydown", function (e) {
+      if (!document.getElementById("manPhim").classList.contains("hien")) return;
+      if (e.key === "Escape")     dongPhim();
+      if (e.key === "ArrowRight") chuyenAnh(1);
+      if (e.key === "ArrowLeft")  chuyenAnh(-1);
+    });
+
+    /* ---------- TIỆN ÍCH ---------- */
+    function baoThieu(idFile, idOBao) {
+      document.getElementById(idFile).style.display = "none";
+      document.getElementById(idOBao).style.display = "flex";
+    }
+
+    function batTheoDoiCuon() {
+      const theoDoi = new IntersectionObserver(function (ds) {
+        ds.forEach(function (m) { if (m.isIntersecting) m.target.classList.add("daHien"); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll(".cuonHien").forEach(function (el) { theoDoi.observe(el); });
+    }
+  </script>
+
+</body>
+</html>
