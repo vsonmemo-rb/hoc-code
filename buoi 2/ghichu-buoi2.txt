@@ -1,0 +1,6 @@
+Gõ lệnh	Nó làm gì	Bạn sẽ thấy
+pwd	Cho biết đang đứng ở thư mục nào	E:\hoc-code
+dir	Liệt kê file/thư mục ở đây	buoi 1, buoi 2, ghi chú
+cd "buoi 2"	Đi vào thư mục buoi 2	Dòng lệnh đổi thành ...\buoi 2
+mkdir test	Tạo thư mục mới tên test	Thư mục test xuất hiện
+cls	Xóa sạch màn hình terminal	Màn hình trống trơ

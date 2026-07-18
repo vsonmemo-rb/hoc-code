@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang web đầu tiên của Ruby</title>
+
+  <!-- Phần CSS: quy định màu sắc, cỡ chữ, bố cục, hiệu ứng -->
+  <style>
+    body {
+      /* Căn mọi thứ vào giữa màn hình */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+
+      /* Nền màu hồng */
+      background: #ffd6e7;
+
+      /* Để trái tim bay không tạo thanh cuộn */
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Lớp chứa các trái tim, nằm phía sau nội dung */
+    #timBay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;  /* không cản việc bấm nút */
+      z-index: 0;
+    }
+
+    /* Mỗi trái tim */
+    .tim {
+      position: absolute;
+      bottom: -60px;         /* bắt đầu từ dưới màn hình */
+      animation: bayLen linear infinite;
+      opacity: 0;
+    }
+
+    /* Hiệu ứng: bay từ dưới lên trên, vừa bay vừa lắc nhẹ */
+    @keyframes bayLen {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg);        opacity: 0; }
+      10%  {                                                             opacity: 1; }
+      50%  { transform: translateY(-50vh) translateX(30px) rotate(20deg); }
+      90%  {                                                             opacity: 1; }
+      100% { transform: translateY(-105vh) translateX(-20px) rotate(-15deg); opacity: 0; }
+    }
+
+    /* Nội dung chính nằm trên lớp trái tim */
+    .noiDung {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Tên hiển thị cỡ chữ lớn */
+    h1 {
+      font-size: 64px;
+      margin: 0 0 24px 0;
+      color: #c2185b;
+    }
+
+    /* Nút bấm */
+    button {
+      font-size: 20px;
+      padding: 14px 32px;
+      cursor: pointer;
+      border: none;
+      border-radius: 30px;
+      background: #e91e63;
+      color: white;
+    }
+
+    button:hover {
+      background: #c2185b;
+    }
+
+    /* Dòng lời chào, ban đầu để trống */
+    #loiChao {
+      font-size: 28px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #c2185b;
+      min-height: 34px;   /* giữ chỗ sẵn để trang không bị nhảy khi hiện chữ */
+    }
+
+    /* Khung nhạc Spotify */
+    #khungNhac {
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(194, 24, 91, 0.25);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Lớp chứa trái tim bay (JavaScript sẽ tự tạo trái tim vào đây) -->
+  <div id="timBay"></div>
+
+  <div class="noiDung">
+    <!-- Tên của bạn -->
+    <h1>Ruby</h1>
+
+    <!-- Nút bấm: khi bấm sẽ gọi hàm hienLoiChao() -->
+    <button onclick="hienLoiChao()">Bấm vào đây</button>
+
+    <!-- Chỗ trống để hiện lời chào sau khi bấm nút -->
+    <p id="loiChao"></p>
+
+    <!-- Trình phát nhạc Spotify (cần có mạng) -->
+    <div id="khungNhac">
+      <iframe
+        src="https://open.spotify.com/embed/track/17N3Oqo2rklHgAyR7J9H0S"
+        width="340" height="152" frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Phần JavaScript -->
+  <script>
+    // Hiện lời chào khi bấm nút
+    function hienLoiChao() {
+      document.getElementById("loiChao").textContent = "Hữu duyên gặp nhau nhé";
+    }
+
+    // Tạo các trái tim bay lên
+    const kieuTim = ["❤️", "💕", "💖", "💗", "💓", "🩷"];
+    const khungTim = document.getElementById("timBay");
+
+    function taoTim() {
+      const tim = document.createElement("span");
+      tim.className = "tim";
+      // Chọn ngẫu nhiên 1 kiểu trái tim
+      tim.textContent = kieuTim[Math.floor(Math.random() * kieuTim.length)];
+      // Vị trí ngang ngẫu nhiên
+      tim.style.left = Math.random() * 100 + "%";
+      // Kích thước ngẫu nhiên (20px - 45px)
+      tim.style.fontSize = (20 + Math.random() * 25) + "px";
+      // Thời gian bay ngẫu nhiên (5 - 10 giây)
+      tim.style.animationDuration = (5 + Math.random() * 5) + "s";
+
+      khungTim.appendChild(tim);
+
+      // Xóa trái tim sau khi bay xong để trang không bị nặng
+      setTimeout(function () { tim.remove(); }, 11000);
+    }
+
+    // Cứ 400 mili giây tạo 1 trái tim mới
+    setInterval(taoTim, 400);
+
+    // Tạo sẵn vài trái tim ngay khi mở trang cho đỡ trống
+    for (let i = 0; i < 8; i++) {
+      setTimeout(taoTim, i * 300);
+    }
+  </script>
+
+</body>
+</html>
