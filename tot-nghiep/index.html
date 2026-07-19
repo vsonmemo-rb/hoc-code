@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <title>Chúc mừng tốt nghiệp</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:wght@400;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --hong-dam:  #e0356b;
+      --hong-vua:  #f26a91;
+      --hong-nhat: #fde3ea;
+      --hong-rat:  #fff5f8;
+      --trang:     #ffffff;
+      --chu:       #3d2530;
+      --chu-mo:    #9b8590;
+      --vang-den:  #ffd98a;
+      --bong:      0 6px 20px rgba(224, 53, 107, 0.14);
+      --bong-sau:  0 18px 44px rgba(224, 53, 107, 0.24);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Be Vietnam Pro", system-ui, sans-serif;
+      background: #0a0a0c;
+      color: var(--chu);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ==========================================================
+       MÀN 1 — SÂN KHẤU TUNG MŨ
+       ========================================================== */
+    #manSanKhau {
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, #fff8fa 0%, transparent 65%),
+        linear-gradient(160deg, #ffeaf1 0%, #ffd0e0 45%, #f9aec8 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 50; overflow: hidden;
+      transition: opacity 1.2s ease;
+    }
+    #manSanKhau.tat { opacity: 0; pointer-events: none; }
+
+    /* Vệt sáng trắng quét ngang nền hồng */
+    .denQuet {
+      position: absolute; top: -40%; left: -30%;
+      width: 55%; height: 190%;
+      background: linear-gradient(to bottom,
+        rgba(255,255,255,.75), rgba(255,255,255,.28) 55%, transparent);
+      transform: rotate(14deg); filter: blur(42px);
+      animation: quetDen 7s ease-in-out infinite;
+    }
+    @keyframes quetDen {
+      0%,100% { transform: translateX(0) rotate(14deg); }
+      50%     { transform: translateX(150%) rotate(-14deg); }
+    }
+    .vungSang {
+      position: absolute; width: 900px; height: 900px;
+      background: radial-gradient(circle, rgba(255,255,255,.65) 0%,
+                  rgba(255,255,255,.22) 38%, transparent 68%);
+      animation: thoSang 4.5s ease-in-out infinite;
+    }
+    @keyframes thoSang {
+      0%,100% { opacity:.7; transform: scale(1); }
+      50%     { opacity:1;  transform: scale(1.07); }
+    }
+
+    .noiDungSanKhau { position: relative; z-index: 2; text-align: center; padding: 24px; }
+    .loiMo {
+      font-family: "Dancing Script", cursive; font-size: 34px;
+      color: var(--hong-dam); margin: 0 0 6px;
+      opacity: 0; animation: hienChu 1.6s ease .5s forwards;
+    }
+    #tenNguoi {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(40px, 11vw, 92px); font-weight: 700;
+      color: #b01f4d; margin: 0; letter-spacing: 1px; line-height: 1.15;
+      opacity: 0; animation: hienChu 2.4s ease 1.2s forwards;
+      text-shadow: 0 4px 26px rgba(224,53,107,.35), 0 0 70px rgba(255,255,255,.9);
+    }
+    .phuDe {
+      font-size: 12.5px; letter-spacing: 3.5px; text-transform: uppercase;
+      color: #a2506e; margin: 18px 0 0; font-weight: 500;
+      opacity: 0; animation: hienChu 2s ease 2.4s forwards;
+    }
+    .vachNgan {
+      width: 0; height: 1.5px; margin: 30px auto;
+      background: linear-gradient(90deg, transparent, var(--hong-dam), transparent);
+      animation: keoVach 1.8s ease 2.8s forwards;
+    }
+    @keyframes keoVach { to { width: 220px; } }
+
+    #nutTungMu {
+      padding: 18px 46px; font-family: inherit;
+      font-size: 16px; font-weight: 600; letter-spacing: 2px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      border: none; border-radius: 999px; cursor: pointer; opacity: 0;
+      animation: hienChu 1.4s ease 3.4s forwards, nhipTim 2.4s ease-in-out 5s infinite;
+      box-shadow: 0 10px 34px rgba(224,53,107,.4);
+      transition: transform .3s cubic-bezier(.34,1.4,.64,1);
+    }
+    #nutTungMu:hover { transform: scale(1.06); }
+    @keyframes hienChu { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes nhipTim {
+      0%,100%{ box-shadow: 0 10px 34px rgba(224,53,107,.4); }
+      50%    { box-shadow: 0 10px 52px rgba(224,53,107,.72); }
+    }
+
+    #muBay {
+      position: fixed; left: 50%; bottom: 22%;
+      transform: translateX(-50%); font-size: 72px;
+      z-index: 60; opacity: 0; pointer-events: none;
+    }
+    #muBay.bay { animation: tungMu 2.3s cubic-bezier(.2,.75,.35,1) forwards; }
+    @keyframes tungMu {
+      0%   { opacity:1; transform: translateX(-50%) translateY(0) rotate(0) scale(1); }
+      45%  { opacity:1; transform: translateX(-50%) translateY(-52vh) rotate(320deg) scale(1.35); }
+      100% { opacity:0; transform: translateX(-50%) translateY(-115vh) rotate(760deg) scale(.5); }
+    }
+
+    /* z-index cao để pháo hoa nổ ĐÈ LÊN cả lá thư */
+    #phaoHoa { position: fixed; inset: 0; pointer-events: none; z-index: 110; overflow: hidden; }
+    .tia { position: absolute; width: 7px; height: 7px; border-radius: 50%;
+           animation: noTia 1.7s cubic-bezier(.1,.7,.3,1) forwards; }
+    @keyframes noTia {
+      0%   { transform: translate(0,0) scale(1); opacity:1; }
+      100% { transform: translate(var(--dx),var(--dy)) scale(.25); opacity:0; }
+    }
+
+    /* ==========================================================
+       MÀN 2 — DANH SÁCH KIỂU APP
+       ========================================================== */
+    #manDanhSach {
+      display: none;
+      max-width: 460px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: var(--trang);
+      box-shadow: 0 0 60px rgba(0,0,0,.35);
+      padding-bottom: 120px;
+    }
+
+    /* Thanh đầu trang */
+    .thanhDau {
+      position: sticky; top: 0; z-index: 20;
+      background: var(--trang);
+      padding: 18px 20px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--hong-nhat);
+    }
+    .bieuTuong { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+    .bieuTuong span { display: block; width: 20px; height: 2.5px; background: var(--hong-dam); border-radius: 2px; }
+    .oVuong { width: 20px; height: 20px; border-radius: 5px; background: var(--hong-dam); }
+
+    /* Tiêu đề lớn */
+    .khoiTieuDe { padding: 26px 20px 6px; }
+    .khoiTieuDe h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 30px; margin: 0 0 6px; color: var(--chu);
+    }
+    .khoiTieuDe p {
+      font-family: "Dancing Script", cursive;
+      font-size: 21px; color: var(--chu-mo); margin: 0;
+    }
+
+    /* ---- ĐĨA NHẠC QUAY ---- */
+    .khoiNhac {
+      margin: 22px 20px 8px;
+      background: linear-gradient(135deg, var(--hong-rat), var(--hong-nhat));
+      border-radius: 20px;
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 15px;
+      cursor: pointer;
+      box-shadow: var(--bong);
+    }
+
+    .dia {
+      position: relative;
+      width: 60px; height: 60px; border-radius: 50%;
+      flex-shrink: 0;
+      background:
+        repeating-radial-gradient(circle at 50% 50%,
+          #2a2028 0 2px, #1a141a 2px 4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.35);
+      animation: quayDia 3.2s linear infinite;
+      animation-play-state: paused;   /* dừng khi chưa phát nhạc */
+    }
+    .dia.dangQuay { animation-play-state: running; }
+    /* Nhãn giữa đĩa */
+    .dia::after {
+      content: "";
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 22px; height: 22px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      box-shadow: 0 0 0 3px rgba(255,255,255,.25);
+    }
+    /* Lỗ giữa đĩa */
+    .dia::before {
+      content: "";
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--trang); z-index: 2;
+    }
+    @keyframes quayDia { to { transform: rotate(360deg); } }
+
+    .chuNhac { flex: 1; min-width: 0; }
+    .chuNhac b { display: block; font-size: 14px; font-weight: 600; }
+    .chuNhac span { font-size: 12px; color: var(--chu-mo); }
+    .songNhac { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
+    .songNhac i {
+      display: block; width: 3px; background: var(--hong-dam);
+      border-radius: 2px; height: 6px;
+      animation: nhayNhac .9s ease-in-out infinite;
+      animation-play-state: paused;
+    }
+    .songNhac.dangChay i { animation-play-state: running; }
+    .songNhac i:nth-child(2) { animation-delay: .15s; }
+    .songNhac i:nth-child(3) { animation-delay: .3s; }
+    .songNhac i:nth-child(4) { animation-delay: .45s; }
+    @keyframes nhayNhac { 0%,100% { height: 5px; } 50% { height: 18px; } }
+
+    /* ---- DANH SÁCH LÁ THƯ ---- */
+    .nhanMuc {
+      font-size: 11px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--hong-dam);
+      padding: 24px 20px 10px; margin: 0;
+    }
+
+    .muc {
+      display: flex; gap: 14px; align-items: center;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background .25s ease;
+    }
+    .muc:active { background: var(--hong-rat); }
+
+    .anhNho {
+      width: 84px; height: 84px; flex-shrink: 0;
+      border-radius: 14px; overflow: hidden;
+      background: var(--hong-nhat);
+      box-shadow: var(--bong);
+    }
+    /* GIỮ NGUYÊN MÀU ẢNH GỐC */
+    .anhNho img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .anhNho .thieu {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; color: var(--chu-mo); text-align: center; padding: 6px;
+    }
+
+    .noiDungMuc { flex: 1; min-width: 0; }
+    .noiDungMuc .hangTren {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .noiDungMuc h3 {
+      margin: 0 0 6px; font-size: 15px; font-weight: 600;
+      color: var(--chu);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .dauMo {
+      width: 22px; height: 22px; flex-shrink: 0; border-radius: 7px;
+      background: var(--hong-dam); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .noiDungMuc p {
+      margin: 0; font-size: 12.5px; color: var(--chu-mo); line-height: 1.55;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .nhanNgay {
+      display: inline-block; margin-top: 8px;
+      font-size: 11px; padding: 3px 11px; border-radius: 999px;
+      background: var(--hong-nhat); color: var(--hong-dam); font-weight: 500;
+    }
+
+    /* ---- PHONG THƯ TRONG DANH SÁCH ---- */
+    .mucThu { background: linear-gradient(135deg, var(--hong-rat), var(--hong-nhat)); }
+    .phongBiNho {
+      position: relative;
+      width: 84px; height: 84px; flex-shrink: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #fff, #ffeaf1);
+      box-shadow: var(--bong);
+      overflow: hidden;
+      animation: rungNhe 2.6s ease-in-out infinite;
+    }
+    .napBi {
+      position: absolute; top: 0; left: 0; right: 0; height: 46px;
+      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      border-radius: 0 0 50% 50% / 0 0 34px 34px;
+    }
+    .niemBi {
+      position: absolute; top: 34px; left: 50%;
+      transform: translateX(-50%);
+      width: 30px; height: 30px; border-radius: 50%;
+      background: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; box-shadow: 0 2px 8px rgba(224,53,107,.25);
+    }
+    @keyframes rungNhe {
+      0%,100% { transform: rotate(0deg) scale(1); }
+      50%     { transform: rotate(-3deg) scale(1.04); }
+    }
+
+    /* ---- KHỐI 4 ẢNH DÁN CUỐI TRANG ---- */
+    .anhLon {
+      margin: 26px 20px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .oDan {
+      aspect-ratio: 1/1;
+      border-radius: 16px; overflow: hidden;
+      background: var(--hong-nhat);
+      box-shadow: var(--bong-sau);
+      transition: transform .4s cubic-bezier(.34,1.4,.64,1);
+    }
+    .oDan:nth-child(1) { transform: rotate(-2.5deg); }
+    .oDan:nth-child(2) { transform: rotate(2deg); }
+    .oDan:nth-child(3) { transform: rotate(1.8deg); }
+    .oDan:nth-child(4) { transform: rotate(-2deg); }
+    .oDan:hover { transform: rotate(0deg) scale(1.06); z-index: 3; }
+    /* GIỮ NGUYÊN MÀU ẢNH GỐC */
+    .oDan img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .oDan .thieu {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--chu-mo);
+    }
+
+    /* ---- LÁ THƯ GIỮA MÀN HÌNH ---- */
+    #manLaThu {
+      position: fixed; inset: 0; z-index: 90;
+      background: rgba(70, 20, 40, .55);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    #manLaThu.hien { display: flex; }
+
+    .toThu {
+      position: relative;
+      max-width: 430px; width: 100%;
+      max-height: 88vh; overflow-y: auto;
+      background: linear-gradient(160deg, #fffdfd, #fff2f7);
+      border-radius: 24px;
+      padding: 44px 34px 38px;
+      box-shadow: 0 30px 70px rgba(90,20,50,.45);
+      text-align: center;
+      animation: moThuRa .6s cubic-bezier(.2,1.2,.4,1);
+    }
+    @keyframes moThuRa {
+      from { opacity: 0; transform: translateY(40px) scale(.85); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .dongThu {
+      position: absolute; top: 14px; right: 14px;
+      width: 34px; height: 34px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: var(--hong-nhat); color: var(--hong-dam); font-size: 15px;
+    }
+    .dauThu { font-size: 46px; margin-bottom: 10px; }
+    .toThu h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 26px; margin: 0 0 20px; color: var(--hong-dam);
+    }
+    .chuThu {
+      font-family: "Dancing Script", cursive;
+      font-size: 24px; line-height: 1.75;
+      color: var(--chu); margin: 0; text-align: left;
+    }
+    .kyThu {
+      font-family: "Dancing Script", cursive;
+      font-size: 22px; color: var(--hong-dam);
+      text-align: right; margin-top: 24px;
+    }
+
+    /* ---- XEM ẢNH TO ---- */
+    #manXemAnh {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(28, 8, 18, .93);
+      display: none;
+      align-items: center; justify-content: center;
+      touch-action: pan-y;
+      user-select: none;
+    }
+    #manXemAnh.hien { display: flex; }
+
+    #anhXem {
+      max-width: 92vw; max-height: 78vh;
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.6);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+    #anhXem.dangDoi { opacity: 0; transform: scale(.94); }
+
+    .dongXem {
+      position: absolute; top: 20px; right: 20px;
+      width: 44px; height: 44px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: rgba(255,255,255,.16); color: #fff; font-size: 19px;
+      z-index: 3;
+    }
+    .nutLuot {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 50px; height: 50px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: rgba(255,255,255,.16); color: #fff; font-size: 24px;
+      z-index: 3;
+    }
+    .dongXem:hover, .nutLuot:hover { background: rgba(255,255,255,.32); }
+    #luotTruoc { left: 18px; }
+    #luotSau   { right: 18px; }
+
+    .chamXem {
+      position: absolute; bottom: 62px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 9px;
+    }
+    .chamXem div {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: rgba(255,255,255,.35);
+      transition: all .3s ease; cursor: pointer;
+    }
+    .chamXem div.dangXem { background: #fff; width: 26px; border-radius: 999px; }
+
+    .goiYVuot {
+      position: absolute; bottom: 26px; left: 0; right: 0;
+      text-align: center; color: rgba(255,255,255,.5);
+      font-size: 12px; margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .nutLuot { display: none; }   /* điện thoại thì vuốt, không cần nút */
+    }
+
+    /* ---- MƯA TIM & PHÁO GIẤY ---- */
+    #mua { position: fixed; inset: 0; pointer-events: none; z-index: 95; overflow: hidden; }
+    .hatMua {
+      position: absolute; top: -40px;
+      animation: roiXuong linear forwards;
+    }
+    @keyframes roiXuong {
+      0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) translateX(var(--lech)) rotate(var(--xoay)); opacity: 0; }
+    }
+
+    .loiKet { padding: 22px 22px 0; text-align: center; }
+    .loiKet p {
+      font-family: "Dancing Script", cursive; font-size: 22px;
+      color: var(--chu); line-height: 1.6; margin: 0 0 8px;
+    }
+    .kyTen { font-family: "Dancing Script", cursive; font-size: 20px; color: var(--hong-dam); }
+
+    /* Nút tròn dưới cùng */
+    .nutDay {
+      position: fixed; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 100%; max-width: 460px;
+      padding: 14px 20px 20px;
+      background: linear-gradient(to top, var(--trang) 62%, transparent);
+      z-index: 25;
+    }
+    .nutDay button {
+      width: 100%; padding: 17px;
+      font-family: inherit; font-size: 14.5px; font-weight: 600;
+      color: #fff; border: none; border-radius: 999px; cursor: pointer;
+      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      box-shadow: var(--bong-sau);
+    }
+
+    /* ==========================================================
+       MÀN 3 — CHI TIẾT LÁ THƯ
+       ========================================================== */
+    #manChiTiet {
+      position: fixed; inset: 0; z-index: 80;
+      background: var(--trang);
+      max-width: 460px; margin: 0 auto;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform .42s cubic-bezier(.3,.9,.4,1);
+    }
+    #manChiTiet.hien { transform: translateX(0); }
+
+    .dauChiTiet {
+      position: sticky; top: 0; z-index: 5;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(8px);
+      padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid var(--hong-nhat);
+    }
+    .nutQuayLai {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: none; cursor: pointer;
+      background: var(--hong-nhat); color: var(--hong-dam);
+      font-size: 17px;
+    }
+    .dauChiTiet b { font-size: 15px; }
+
+    .anhChiTiet {
+      width: 100%; aspect-ratio: 1/1;
+      background: var(--hong-nhat);
+      overflow: hidden;
+    }
+    .anhChiTiet img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .anhChiTiet .thieu {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--chu-mo); font-size: 13px;
+    }
+
+    .thanChiTiet { padding: 24px 22px 60px; }
+    .thanChiTiet .ngay {
+      display: inline-block; font-size: 11px; padding: 4px 12px;
+      border-radius: 999px; background: var(--hong-nhat);
+      color: var(--hong-dam); margin-bottom: 14px;
+    }
+    .thanChiTiet h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 25px; margin: 0 0 16px;
+    }
+    .thanChiTiet .thu {
+      font-family: "Dancing Script", cursive;
+      font-size: 22px; line-height: 1.75; color: var(--chu);
+    }
+
+    @media (min-width: 500px) {
+      body { background: #1b1015; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== MÀN 1: SÂN KHẤU ===== -->
+  <div id="manSanKhau">
+    <div class="denQuet"></div>
+    <div class="vungSang"></div>
+    <div class="noiDungSanKhau">
+      <p class="loiMo">chúc mừng</p>
+      <h1 id="tenNguoi">Chị Phương Linh</h1>
+      <p class="phuDe">Cử nhân · Đại học Kinh tế Quốc dân · 2026</p>
+      <div class="vachNgan"></div>
+      <button id="nutTungMu" onclick="tungMu()">TUNG MŨ 🎓</button>
+    </div>
+  </div>
+
+  <div id="muBay">🎓</div>
+  <div id="phaoHoa"></div>
+
+  <!-- ===== MÀN 2: DANH SÁCH ===== -->
+  <div id="manDanhSach">
+
+    <div class="thanhDau">
+      <div class="bieuTuong"><span></span><span></span><span></span></div>
+      <div class="oVuong"></div>
+    </div>
+
+    <div class="khoiTieuDe">
+      <h1>Gửi chị Linh 💗</h1>
+    </div>
+
+    <!-- Đĩa nhạc -->
+    <div class="khoiNhac" onclick="doiNhac()">
+      <div class="dia" id="dia"></div>
+      <div class="chuNhac">
+        <b id="tenBaiHat">Nhạc kỷ niệm</b>
+        <span id="trangThaiNhac">bấm để bật nhạc</span>
+      </div>
+      <div class="songNhac" id="songNhac"><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <!-- Phong thư -->
+    <div class="muc mucThu" onclick="moThuChinh()">
+      <div class="phongBiNho">
+        <div class="napBi"></div>
+        <div class="niemBi">💗</div>
+      </div>
+      <div class="noiDungMuc">
+        <div class="hangTren"><h3>gửi chị thư nè</h3><div class="dauMo">›</div></div>
+        <p>Bấm vào để mở lá thư nhé 💌</p>
+        <span class="nhanNgay">Thư tay</span>
+      </div>
+    </div>
+
+    <p class="nhanMuc">Ảnh chị em</p>
+    <div class="anhLon" id="anhLon"></div>
+
+    <div class="loiKet">
+      <p>Chúc mừng chị tốt nghiệp</p>
+      <div class="kyTen">@huynr.bfrv</div>
+    </div>
+
+    <div class="nutDay">
+      <button onclick="muaTim()">Em làm cho vui hoy, không hề emo =))</button>
+    </div>
+  </div>
+
+  <!-- ===== LÁ THƯ CHÍNH — hiện giữa màn hình ===== -->
+  <div id="manLaThu" onclick="dongThuChinh()">
+    <div class="toThu" onclick="event.stopPropagation()">
+      <button class="dongThu" onclick="dongThuChinh()">✕</button>
+      <div class="dauThu">💌</div>
+      <h2>Gửi chị Linh</h2>
+      <p class="chuThu" id="chuThuChinh"></p>
+      <div class="kyThu">@huynr.bfrv</div>
+    </div>
+  </div>
+
+  <!-- ===== XEM ẢNH TO ===== -->
+  <div id="manXemAnh">
+    <button class="dongXem" onclick="dongXemAnh()">✕</button>
+    <button class="nutLuot" id="luotTruoc" onclick="chuyenXem(-1)">‹</button>
+    <button class="nutLuot" id="luotSau" onclick="chuyenXem(1)">›</button>
+    <img id="anhXem" src="" alt="">
+    <div class="chamXem" id="chamXem"></div>
+    <p class="goiYVuot">vuốt sang trái / phải để xem ảnh khác</p>
+  </div>
+
+  <div id="mua"></div>
+
+  <audio id="nhacNen" src="nhac.mp3" loop></audio>
+
+  <script>
+    /* ===================================================
+       ÂM THANH — tự tạo bằng code, không cần file
+       =================================================== */
+    let hopAm = null;
+    function moHopAm() {
+      if (!hopAm) hopAm = new (window.AudioContext || window.webkitAudioContext)();
+      if (hopAm.state === "suspended") hopAm.resume();
+      return hopAm;
+    }
+
+    // Nốt đơn (dùng cho tiếng bấm)
+    function phatNot(tanSo, doDai, doTo, tre, dang) {
+      const ctx = moHopAm();
+      const t0 = ctx.currentTime + (tre || 0);
+      const song = ctx.createOscillator();
+      const gain = ctx.createGain();
+      song.type = dang || "sine";
+      song.frequency.setValueAtTime(tanSo, t0);
+      song.frequency.exponentialRampToValueAtTime(tanSo * 0.7, t0 + doDai);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(doTo, t0 + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + doDai);
+      song.connect(gain); gain.connect(ctx.destination);
+      song.start(t0); song.stop(t0 + doDai + 0.02);
+    }
+
+    // 1) Tiếng bấm nút
+    function amBamNut() { phatNot(920, 0.08, 0.16); }
+
+    // 2) Tiếng ánh sáng quét — vệt lướt nhẹ, êm
+    function amAnhSang() {
+      const ctx = moHopAm();
+      const t0 = ctx.currentTime;
+      const song = ctx.createOscillator();
+      const loc = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      song.type = "triangle";
+      song.frequency.setValueAtTime(500, t0);
+      song.frequency.exponentialRampToValueAtTime(1900, t0 + 1.5);
+      song.frequency.exponentialRampToValueAtTime(420, t0 + 3.0);
+
+      loc.type = "bandpass";
+      loc.frequency.value = 1200;
+      loc.Q.value = 1.2;
+
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.035, t0 + 0.8);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 3.0);
+
+      song.connect(loc); loc.connect(gain); gain.connect(ctx.destination);
+      song.start(t0); song.stop(t0 + 3.1);
+    }
+
+    // 3) Tiếng pháo nổ — tiếng xì nhiễu + cú đấm trầm
+    function amPhaoNo(tre) {
+      const ctx = moHopAm();
+      const t0 = ctx.currentTime + (tre || 0);
+
+      // Nhiễu trắng = tiếng "xoẹt" của pháo
+      const dai = 0.9;
+      const dem = ctx.createBuffer(1, ctx.sampleRate * dai, ctx.sampleRate);
+      const duLieu = dem.getChannelData(0);
+      for (let i = 0; i < duLieu.length; i++) {
+        duLieu[i] = (Math.random() * 2 - 1) * (1 - i / duLieu.length);
+      }
+      const nguon = ctx.createBufferSource();
+      nguon.buffer = dem;
+
+      const loc = ctx.createBiquadFilter();
+      loc.type = "lowpass";
+      loc.frequency.setValueAtTime(4200, t0);
+      loc.frequency.exponentialRampToValueAtTime(320, t0 + dai);
+
+      const gN = ctx.createGain();
+      gN.gain.setValueAtTime(0.34, t0);
+      gN.gain.exponentialRampToValueAtTime(0.0001, t0 + dai);
+
+      nguon.connect(loc); loc.connect(gN); gN.connect(ctx.destination);
+      nguon.start(t0); nguon.stop(t0 + dai);
+
+      // Cú "bụp" trầm phía dưới
+      const tram = ctx.createOscillator();
+      const gT = ctx.createGain();
+      tram.type = "sine";
+      tram.frequency.setValueAtTime(150, t0);
+      tram.frequency.exponentialRampToValueAtTime(38, t0 + 0.35);
+      gT.gain.setValueAtTime(0.30, t0);
+      gT.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
+      tram.connect(gT); gT.connect(ctx.destination);
+      tram.start(t0); tram.stop(t0 + 0.45);
+    }
+
+    // Tiếng mũ bay vút lên
+    function amMuBay() {
+      const ctx = moHopAm();
+      const t0 = ctx.currentTime;
+      const song = ctx.createOscillator();
+      const gain = ctx.createGain();
+      song.type = "sine";
+      song.frequency.setValueAtTime(300, t0);
+      song.frequency.exponentialRampToValueAtTime(1500, t0 + 0.75);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.12, t0 + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.85);
+      song.connect(gain); gain.connect(ctx.destination);
+      song.start(t0); song.stop(t0 + 0.9);
+    }
+
+    // Ánh sáng quét lặp lại đúng nhịp 7 giây của hiệu ứng
+    let denAnhSang = null;
+    function batTiengAnhSang() {
+      if (denAnhSang) return;
+      amAnhSang();
+      denAnhSang = setInterval(amAnhSang, 7000);
+    }
+    function tatTiengAnhSang() {
+      clearInterval(denAnhSang);
+      denAnhSang = null;
+    }
+
+    // Trình duyệt chỉ cho phát tiếng SAU khi người dùng chạm vào trang
+    document.addEventListener("pointerdown", function khoiDongAmThanh() {
+      moHopAm();
+      batTiengAnhSang();
+      document.removeEventListener("pointerdown", khoiDongAmThanh);
+    }, { once: false });
+
+    // Mọi cú bấm đều có tiếng
+    document.addEventListener("click", function () { amBamNut(); });
+
+    // Nội dung lá thư chính
+    const noiDungThuChinh =
+      "Chúc chị Linh iu dấu chính thức trở thành cử nhân xuất sắc Neu. " +
+      "Iem cạm ơn chị đợt em mới vào công ty chị hay chỉ cho e nhưng cũng tiếc quaa " +
+      "làm việc với chị được có 1 tháng à hmuu =(((. " +
+      "Chúc mọi dự định sắp tới của chị đều thuận buồm xuôi gió";
+
+    /* ---------- DỰNG DANH SÁCH ---------- */
+    // Khối "Ảnh chị em": dán 4 tấm ảnh
+    const SO_ANH = 4;
+    const khungDan = document.getElementById("anhLon");
+    for (let n = 1; n <= SO_ANH; n++) {
+      const o = document.createElement("div");
+      o.className = "oDan";
+      o.onclick = function () { moXemAnh(n - 1); };
+      o.innerHTML =
+        '<img src="anh' + n + '.jpg" alt="Kỷ niệm ' + n + '" ' +
+          'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+        '<div class="thieu" style="display:none;">anh' + n + '.jpg</div>';
+      khungDan.appendChild(o);
+    }
+
+    /* ---------- XEM ẢNH TO + VUỐT ---------- */
+    let anhDangXem = 0;
+
+    // Tạo các chấm chỉ vị trí
+    const khungCham = document.getElementById("chamXem");
+    for (let i = 0; i < SO_ANH; i++) {
+      const c = document.createElement("div");
+      c.onclick = function () { hienAnhXem(i); };
+      khungCham.appendChild(c);
+    }
+
+    function moXemAnh(i) {
+      document.getElementById("manXemAnh").classList.add("hien");
+      hienAnhXem(i);
+    }
+
+    function dongXemAnh() {
+      document.getElementById("manXemAnh").classList.remove("hien");
+    }
+
+    function hienAnhXem(i) {
+      anhDangXem = (i + SO_ANH) % SO_ANH;      // quay vòng
+      const anh = document.getElementById("anhXem");
+      anh.classList.add("dangDoi");
+      setTimeout(function () {
+        anh.src = "anh" + (anhDangXem + 1) + ".jpg";
+        anh.classList.remove("dangDoi");
+      }, 200);
+      khungCham.querySelectorAll("div").forEach(function (c, k) {
+        c.classList.toggle("dangXem", k === anhDangXem);
+      });
+    }
+
+    function chuyenXem(buoc) { hienAnhXem(anhDangXem + buoc); }
+
+    // --- Vuốt bằng ngón tay ---
+    const manXem = document.getElementById("manXemAnh");
+    let batDauX = 0, batDauY = 0;
+
+    manXem.addEventListener("touchstart", function (e) {
+      batDauX = e.changedTouches[0].clientX;
+      batDauY = e.changedTouches[0].clientY;
+    }, { passive: true });
+
+    manXem.addEventListener("touchend", function (e) {
+      const lechX = e.changedTouches[0].clientX - batDauX;
+      const lechY = e.changedTouches[0].clientY - batDauY;
+      // Chỉ tính là vuốt ngang khi đi ngang nhiều hơn dọc và đủ xa
+      if (Math.abs(lechX) > 50 && Math.abs(lechX) > Math.abs(lechY)) {
+        chuyenXem(lechX < 0 ? 1 : -1);   // vuốt sang trái -> ảnh tiếp theo
+      }
+    }, { passive: true });
+
+    // --- Vuốt bằng chuột trên máy tính ---
+    let keoX = null;
+    manXem.addEventListener("mousedown", function (e) { keoX = e.clientX; });
+    manXem.addEventListener("mouseup", function (e) {
+      if (keoX === null) return;
+      const lech = e.clientX - keoX;
+      if (Math.abs(lech) > 60) chuyenXem(lech < 0 ? 1 : -1);
+      keoX = null;
+    });
+
+    // --- Bàn phím ---
+    document.addEventListener("keydown", function (e) {
+      if (!manXem.classList.contains("hien")) return;
+      if (e.key === "Escape")     dongXemAnh();
+      if (e.key === "ArrowRight") chuyenXem(1);
+      if (e.key === "ArrowLeft")  chuyenXem(-1);
+    });
+
+    /* ---------- NHẠC + ĐĨA QUAY ---------- */
+    function capNhatDia(dangChay) {
+      document.getElementById("dia").classList.toggle("dangQuay", dangChay);
+      document.getElementById("songNhac").classList.toggle("dangChay", dangChay);
+      document.getElementById("trangThaiNhac").textContent =
+        dangChay ? "đang phát ♪" : "bấm để bật nhạc";
+    }
+
+    function doiNhac() {
+      const nhac = document.getElementById("nhacNen");
+      if (nhac.paused) {
+        nhac.play().then(function () {
+          capNhatDia(true);
+          muaTim();                 // bật nhạc -> tim và pháo giấy bay khắp màn hình
+        }).catch(function () {
+          document.getElementById("trangThaiNhac").textContent = "chưa có file nhac.mp3";
+        });
+      } else {
+        nhac.pause();
+        capNhatDia(false);
+      }
+    }
+
+    /* ---------- MƯA TIM + PHÁO GIẤY ---------- */
+    function muaTim() {
+      const khung = document.getElementById("mua");
+      const hinh = ["💗","💕","💖","🩷","💘","🎊","✨","🎉","💝"];
+
+      for (let i = 0; i < 90; i++) {
+        const h = document.createElement("span");
+        h.className = "hatMua";
+        h.textContent = hinh[Math.floor(Math.random() * hinh.length)];
+        h.style.left = Math.random() * 100 + "%";
+        h.style.fontSize = (16 + Math.random() * 26) + "px";
+        h.style.setProperty("--lech", (Math.random() * 200 - 100) + "px");
+        h.style.setProperty("--xoay", (Math.random() * 720 - 360) + "deg");
+        const thoiGian = 3.5 + Math.random() * 3;
+        h.style.animationDuration = thoiGian + "s";
+        h.style.animationDelay = (Math.random() * 1.8) + "s";
+        khung.appendChild(h);
+        setTimeout(function () { h.remove(); }, (thoiGian + 2) * 1000);
+      }
+    }
+
+    /* ---------- LÁ THƯ CHÍNH ---------- */
+    function moThuChinh() {
+      document.getElementById("chuThuChinh").textContent = noiDungThuChinh;
+      document.getElementById("manLaThu").classList.add("hien");
+      muaTim();
+      banPhaoMungThu();
+    }
+
+    // Loạt pháo hoa rực rỡ khi lá thư hiện ra
+    function banPhaoMungThu() {
+      const dot = [
+        { x: .22, y: .26, tre:  120 },
+        { x: .78, y: .22, tre:  340 },
+        { x: .50, y: .14, tre:  580 },
+        { x: .14, y: .58, tre:  860 },
+        { x: .86, y: .55, tre: 1120 },
+        { x: .34, y: .38, tre: 1420 },
+        { x: .66, y: .70, tre: 1700 },
+        { x: .50, y: .44, tre: 2000 }
+      ];
+      dot.forEach(function (d) {
+        setTimeout(function () {
+          noPhao(d.x, d.y);
+          amPhaoNo();
+        }, d.tre);
+      });
+    }
+    function dongThuChinh() {
+      document.getElementById("manLaThu").classList.remove("hien");
+    }
+
+    /* ---------- TUNG MŨ ---------- */
+    function tungMu() {
+      document.getElementById("nutTungMu").disabled = true;
+      document.getElementById("muBay").classList.add("bay");
+      amMuBay();                 // tiếng mũ bay vút lên
+      tatTiengAnhSang();         // tắt tiếng ánh sáng, nhường chỗ cho pháo
+
+      const nhac = document.getElementById("nhacNen");
+      nhac.volume = 0;
+      nhac.play().then(function () {
+        tangDanAmLuong(nhac, 0.7, 2500);
+        capNhatDia(true);
+      }).catch(function () { capNhatDia(false); });
+
+      // Pháo hoa: hình ảnh và tiếng nổ đi cùng nhau
+      setTimeout(function(){ noPhao(.50,.35); amPhaoNo(); },  850);
+      setTimeout(function(){ noPhao(.25,.28); amPhaoNo(); }, 1150);
+      setTimeout(function(){ noPhao(.75,.30); amPhaoNo(); }, 1400);
+      setTimeout(function(){ noPhao(.40,.20); amPhaoNo(); }, 1700);
+      setTimeout(function(){ noPhao(.62,.42); amPhaoNo(); }, 1950);
+
+      setTimeout(function(){ document.getElementById("manSanKhau").classList.add("tat"); }, 2300);
+      setTimeout(function () {
+        document.getElementById("manSanKhau").style.display = "none";
+        document.getElementById("manDanhSach").style.display = "block";
+      }, 3400);
+    }
+
+    function tangDanAmLuong(nhac, dich, thoiGian) {
+      const buoc = 40, soBuoc = thoiGian / buoc;
+      let i = 0;
+      const dem = setInterval(function () {
+        i++;
+        nhac.volume = Math.min(dich, (i / soBuoc) * dich);
+        if (i >= soBuoc) clearInterval(dem);
+      }, buoc);
+    }
+
+    function noPhao(tiLeX, tiLeY) {
+      const khung = document.getElementById("phaoHoa");
+      const mau = ["#ffd98a","#ff9ec4","#9ad6ff","#c2ff9a","#ffb37a","#e0a9ff","#fff3c4"];
+      const x = window.innerWidth * tiLeX, y = window.innerHeight * tiLeY;
+      for (let i = 0; i < 55; i++) {
+        const tia = document.createElement("div");
+        tia.className = "tia";
+        tia.style.left = x + "px"; tia.style.top = y + "px";
+        tia.style.background = mau[Math.floor(Math.random()*mau.length)];
+        const goc = Math.random()*Math.PI*2, xa = 90 + Math.random()*210;
+        tia.style.setProperty("--dx", Math.cos(goc)*xa + "px");
+        tia.style.setProperty("--dy", Math.sin(goc)*xa + "px");
+        tia.style.animationDelay = (Math.random()*.12) + "s";
+        khung.appendChild(tia);
+        setTimeout(function(){ tia.remove(); }, 2100);
+      }
+    }
+  </script>
+
+</body>
+</html>
