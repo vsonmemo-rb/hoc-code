@@ -697,7 +697,7 @@
 
       // Nhiễu trắng = tiếng "xoẹt" của pháo
       const dai = 0.9;
-      const dem = ctx.createBuffer(1, ctx.sampleRate * dai, ctx.sampleRate);
+      const dem = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dai), ctx.sampleRate);
       const duLieu = dem.getChannelData(0);
       for (let i = 0; i < duLieu.length; i++) {
         duLieu[i] = (Math.random() * 2 - 1) * (1 - i / duLieu.length);
@@ -707,11 +707,11 @@
 
       const loc = ctx.createBiquadFilter();
       loc.type = "lowpass";
-      loc.frequency.setValueAtTime(4200, t0);
-      loc.frequency.exponentialRampToValueAtTime(320, t0 + dai);
+      loc.frequency.setValueAtTime(7000, t0);
+      loc.frequency.exponentialRampToValueAtTime(500, t0 + dai);
 
       const gN = ctx.createGain();
-      gN.gain.setValueAtTime(0.5, t0);
+      gN.gain.setValueAtTime(0.9, t0);
       gN.gain.exponentialRampToValueAtTime(0.0001, t0 + dai);
 
       nguon.connect(loc); loc.connect(gN); gN.connect(ctx.destination);
@@ -723,7 +723,7 @@
       tram.type = "sine";
       tram.frequency.setValueAtTime(150, t0);
       tram.frequency.exponentialRampToValueAtTime(38, t0 + 0.35);
-      gT.gain.setValueAtTime(0.30, t0);
+      gT.gain.setValueAtTime(0.60, t0);
       gT.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.4);
       tram.connect(gT); gT.connect(ctx.destination);
       tram.start(t0); tram.stop(t0 + 0.45);
