@@ -12,16 +12,16 @@
 
   <style>
     :root {
-      --hong-dam:  #e0356b;
-      --hong-vua:  #f26a91;
-      --hong-nhat: #fde3ea;
-      --hong-rat:  #fff5f8;
+      --xanh-dam:  #1565c0;
+      --xanh-vua:  #42a5f5;
+      --xanh-nhat: #dceeff;
+      --xanh-rat:  #f3f9ff;
       --trang:     #ffffff;
-      --chu:       #3d2530;
-      --chu-mo:    #9b8590;
+      --chu:       #24354a;
+      --chu-mo:    #8296ab;
       --vang-den:  #ffd98a;
-      --bong:      0 6px 20px rgba(224, 53, 107, 0.14);
-      --bong-sau:  0 18px 44px rgba(224, 53, 107, 0.24);
+      --bong:      0 6px 20px rgba(21, 101, 192, 0.14);
+      --bong-sau:  0 18px 44px rgba(21, 101, 192, 0.24);
     }
 
     * { box-sizing: border-box; }
@@ -40,15 +40,15 @@
     #manSanKhau {
       position: fixed; inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, #fff8fa 0%, transparent 65%),
-        linear-gradient(160deg, #ffeaf1 0%, #ffd0e0 45%, #f9aec8 100%);
+        radial-gradient(ellipse 80% 60% at 50% 40%, #f7fbff 0%, transparent 65%),
+        linear-gradient(160deg, #e8f3ff 0%, #c6e2fb 45%, #92c5f0 100%);
       display: flex; align-items: center; justify-content: center;
       z-index: 50; overflow: hidden;
       transition: opacity 1.2s ease;
     }
     #manSanKhau.tat { opacity: 0; pointer-events: none; }
 
-    /* Vệt sáng trắng quét ngang nền hồng */
+    /* Vệt sáng trắng quét ngang nền xanh */
     .denQuet {
       position: absolute; top: -40%; left: -30%;
       width: 55%; height: 190%;
@@ -75,24 +75,24 @@
     .noiDungSanKhau { position: relative; z-index: 2; text-align: center; padding: 24px; }
     .loiMo {
       font-family: "Dancing Script", cursive; font-size: 34px;
-      color: var(--hong-dam); margin: 0 0 6px;
+      color: var(--xanh-dam); margin: 0 0 6px;
       opacity: 0; animation: hienChu 1.6s ease .5s forwards;
     }
     #tenNguoi {
       font-family: "Playfair Display", Georgia, serif;
       font-size: clamp(40px, 11vw, 92px); font-weight: 700;
-      color: #b01f4d; margin: 0; letter-spacing: 1px; line-height: 1.15;
+      color: #0d47a1; margin: 0; letter-spacing: 1px; line-height: 1.15;
       opacity: 0; animation: hienChu 2.4s ease 1.2s forwards;
-      text-shadow: 0 4px 26px rgba(224,53,107,.35), 0 0 70px rgba(255,255,255,.9);
+      text-shadow: 0 4px 26px rgba(21,101,192,.35), 0 0 70px rgba(255,255,255,.9);
     }
     .phuDe {
       font-size: 12.5px; letter-spacing: 3.5px; text-transform: uppercase;
-      color: #a2506e; margin: 18px 0 0; font-weight: 500;
+      color: #4a7ba8; margin: 18px 0 0; font-weight: 500;
       opacity: 0; animation: hienChu 2s ease 2.4s forwards;
     }
     .vachNgan {
       width: 0; height: 1.5px; margin: 30px auto;
-      background: linear-gradient(90deg, transparent, var(--hong-dam), transparent);
+      background: linear-gradient(90deg, transparent, var(--xanh-dam), transparent);
       animation: keoVach 1.8s ease 2.8s forwards;
     }
     @keyframes keoVach { to { width: 220px; } }
@@ -101,17 +101,17 @@
       padding: 18px 46px; font-family: inherit;
       font-size: 16px; font-weight: 600; letter-spacing: 2px;
       color: #fff;
-      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      background: linear-gradient(135deg, var(--xanh-vua), var(--xanh-dam));
       border: none; border-radius: 999px; cursor: pointer; opacity: 0;
       animation: hienChu 1.4s ease 3.4s forwards, nhipTim 2.4s ease-in-out 5s infinite;
-      box-shadow: 0 10px 34px rgba(224,53,107,.4);
+      box-shadow: 0 10px 34px rgba(21,101,192,.4);
       transition: transform .3s cubic-bezier(.34,1.4,.64,1);
     }
     #nutTungMu:hover { transform: scale(1.06); }
     @keyframes hienChu { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
     @keyframes nhipTim {
-      0%,100%{ box-shadow: 0 10px 34px rgba(224,53,107,.4); }
-      50%    { box-shadow: 0 10px 52px rgba(224,53,107,.72); }
+      0%,100%{ box-shadow: 0 10px 34px rgba(21,101,192,.4); }
+      50%    { box-shadow: 0 10px 52px rgba(21,101,192,.72); }
     }
 
     #muBay {
@@ -154,11 +154,11 @@
       background: var(--trang);
       padding: 18px 20px 14px;
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--hong-nhat);
+      border-bottom: 1px solid var(--xanh-nhat);
     }
     .bieuTuong { display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
-    .bieuTuong span { display: block; width: 20px; height: 2.5px; background: var(--hong-dam); border-radius: 2px; }
-    .oVuong { width: 20px; height: 20px; border-radius: 5px; background: var(--hong-dam); }
+    .bieuTuong span { display: block; width: 20px; height: 2.5px; background: var(--xanh-dam); border-radius: 2px; }
+    .oVuong { width: 20px; height: 20px; border-radius: 5px; background: var(--xanh-dam); }
 
     /* Tiêu đề lớn */
     .khoiTieuDe { padding: 26px 20px 6px; }
@@ -174,7 +174,7 @@
     /* ---- ĐĨA NHẠC QUAY ---- */
     .khoiNhac {
       margin: 22px 20px 8px;
-      background: linear-gradient(135deg, var(--hong-rat), var(--hong-nhat));
+      background: linear-gradient(135deg, var(--xanh-rat), var(--xanh-nhat));
       border-radius: 20px;
       padding: 14px 18px;
       display: flex; align-items: center; gap: 15px;
@@ -200,7 +200,7 @@
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%,-50%);
       width: 22px; height: 22px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      background: linear-gradient(135deg, var(--xanh-vua), var(--xanh-dam));
       box-shadow: 0 0 0 3px rgba(255,255,255,.25);
     }
     /* Lỗ giữa đĩa */
@@ -218,7 +218,7 @@
     .chuNhac span { font-size: 12px; color: var(--chu-mo); }
     .songNhac { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
     .songNhac i {
-      display: block; width: 3px; background: var(--hong-dam);
+      display: block; width: 3px; background: var(--xanh-dam);
       border-radius: 2px; height: 6px;
       animation: nhayNhac .9s ease-in-out infinite;
       animation-play-state: paused;
@@ -232,7 +232,7 @@
     /* ---- DANH SÁCH LÁ THƯ ---- */
     .nhanMuc {
       font-size: 11px; font-weight: 600; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--hong-dam);
+      text-transform: uppercase; color: var(--xanh-dam);
       padding: 24px 20px 10px; margin: 0;
     }
 
@@ -242,12 +242,12 @@
       cursor: pointer;
       transition: background .25s ease;
     }
-    .muc:active { background: var(--hong-rat); }
+    .muc:active { background: var(--xanh-rat); }
 
     .anhNho {
       width: 84px; height: 84px; flex-shrink: 0;
       border-radius: 14px; overflow: hidden;
-      background: var(--hong-nhat);
+      background: var(--xanh-nhat);
       box-shadow: var(--bong);
     }
     /* GIỮ NGUYÊN MÀU ẢNH GỐC */
@@ -269,7 +269,7 @@
     }
     .dauMo {
       width: 22px; height: 22px; flex-shrink: 0; border-radius: 7px;
-      background: var(--hong-dam); color: #fff;
+      background: var(--xanh-dam); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 13px;
     }
@@ -281,11 +281,11 @@
     .nhanNgay {
       display: inline-block; margin-top: 8px;
       font-size: 11px; padding: 3px 11px; border-radius: 999px;
-      background: var(--hong-nhat); color: var(--hong-dam); font-weight: 500;
+      background: var(--xanh-nhat); color: var(--xanh-dam); font-weight: 500;
     }
 
     /* ---- PHONG THƯ TRONG DANH SÁCH ---- */
-    .mucThu { background: linear-gradient(135deg, var(--hong-rat), var(--hong-nhat)); }
+    .mucThu { background: linear-gradient(135deg, var(--xanh-rat), var(--xanh-nhat)); }
     .phongBiNho {
       position: relative;
       width: 84px; height: 84px; flex-shrink: 0;
@@ -297,7 +297,7 @@
     }
     .napBi {
       position: absolute; top: 0; left: 0; right: 0; height: 46px;
-      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      background: linear-gradient(135deg, var(--xanh-vua), var(--xanh-dam));
       border-radius: 0 0 50% 50% / 0 0 34px 34px;
     }
     .niemBi {
@@ -305,7 +305,7 @@
       transform: translateX(-50%);
       width: 30px; height: 30px; border-radius: 50%;
       background: #fff; display: flex; align-items: center; justify-content: center;
-      font-size: 15px; box-shadow: 0 2px 8px rgba(224,53,107,.25);
+      font-size: 15px; box-shadow: 0 2px 8px rgba(21,101,192,.25);
     }
     @keyframes rungNhe {
       0%,100% { transform: rotate(0deg) scale(1); }
@@ -322,7 +322,7 @@
     .oDan {
       aspect-ratio: 1/1;
       border-radius: 16px; overflow: hidden;
-      background: var(--hong-nhat);
+      background: var(--xanh-nhat);
       box-shadow: var(--bong-sau);
       transition: transform .4s cubic-bezier(.34,1.4,.64,1);
     }
@@ -342,7 +342,7 @@
     /* ---- LÁ THƯ GIỮA MÀN HÌNH ---- */
     #manLaThu {
       position: fixed; inset: 0; z-index: 90;
-      background: rgba(70, 20, 40, .55);
+      background: rgba(10, 35, 65, .55);
       backdrop-filter: blur(6px);
       display: none;
       align-items: center; justify-content: center;
@@ -354,10 +354,10 @@
       position: relative;
       max-width: 430px; width: 100%;
       max-height: 88vh; overflow-y: auto;
-      background: linear-gradient(160deg, #fffdfd, #fff2f7);
+      background: linear-gradient(160deg, #fdfeff, #eef6ff);
       border-radius: 24px;
       padding: 44px 34px 38px;
-      box-shadow: 0 30px 70px rgba(90,20,50,.45);
+      box-shadow: 0 30px 70px rgba(10,45,90,.45);
       text-align: center;
       animation: moThuRa .6s cubic-bezier(.2,1.2,.4,1);
     }
@@ -370,12 +370,12 @@
       position: absolute; top: 14px; right: 14px;
       width: 34px; height: 34px; border-radius: 50%;
       border: none; cursor: pointer;
-      background: var(--hong-nhat); color: var(--hong-dam); font-size: 15px;
+      background: var(--xanh-nhat); color: var(--xanh-dam); font-size: 15px;
     }
     .dauThu { font-size: 46px; margin-bottom: 10px; }
     .toThu h2 {
       font-family: "Playfair Display", serif;
-      font-size: 26px; margin: 0 0 20px; color: var(--hong-dam);
+      font-size: 26px; margin: 0 0 20px; color: var(--xanh-dam);
     }
     .chuThu {
       font-family: "Dancing Script", cursive;
@@ -384,14 +384,14 @@
     }
     .kyThu {
       font-family: "Dancing Script", cursive;
-      font-size: 22px; color: var(--hong-dam);
+      font-size: 22px; color: var(--xanh-dam);
       text-align: right; margin-top: 24px;
     }
 
     /* ---- XEM ẢNH TO ---- */
     #manXemAnh {
       position: fixed; inset: 0; z-index: 100;
-      background: rgba(28, 8, 18, .93);
+      background: rgba(8, 24, 45, .93);
       display: none;
       align-items: center; justify-content: center;
       touch-action: pan-y;
@@ -463,7 +463,7 @@
       font-family: "Dancing Script", cursive; font-size: 22px;
       color: var(--chu); line-height: 1.6; margin: 0 0 8px;
     }
-    .kyTen { font-family: "Dancing Script", cursive; font-size: 20px; color: var(--hong-dam); }
+    .kyTen { font-family: "Dancing Script", cursive; font-size: 20px; color: var(--xanh-dam); }
 
     /* Nút tròn dưới cùng */
     .nutDay {
@@ -478,7 +478,7 @@
       width: 100%; padding: 17px;
       font-family: inherit; font-size: 14.5px; font-weight: 600;
       color: #fff; border: none; border-radius: 999px; cursor: pointer;
-      background: linear-gradient(135deg, var(--hong-vua), var(--hong-dam));
+      background: linear-gradient(135deg, var(--xanh-vua), var(--xanh-dam));
       box-shadow: var(--bong-sau);
     }
 
@@ -501,19 +501,19 @@
       backdrop-filter: blur(8px);
       padding: 14px 18px;
       display: flex; align-items: center; gap: 12px;
-      border-bottom: 1px solid var(--hong-nhat);
+      border-bottom: 1px solid var(--xanh-nhat);
     }
     .nutQuayLai {
       width: 36px; height: 36px; border-radius: 50%;
       border: none; cursor: pointer;
-      background: var(--hong-nhat); color: var(--hong-dam);
+      background: var(--xanh-nhat); color: var(--xanh-dam);
       font-size: 17px;
     }
     .dauChiTiet b { font-size: 15px; }
 
     .anhChiTiet {
       width: 100%; aspect-ratio: 1/1;
-      background: var(--hong-nhat);
+      background: var(--xanh-nhat);
       overflow: hidden;
     }
     .anhChiTiet img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -526,8 +526,8 @@
     .thanChiTiet { padding: 24px 22px 60px; }
     .thanChiTiet .ngay {
       display: inline-block; font-size: 11px; padding: 4px 12px;
-      border-radius: 999px; background: var(--hong-nhat);
-      color: var(--hong-dam); margin-bottom: 14px;
+      border-radius: 999px; background: var(--xanh-nhat);
+      color: var(--xanh-dam); margin-bottom: 14px;
     }
     .thanChiTiet h2 {
       font-family: "Playfair Display", serif;
@@ -539,7 +539,7 @@
     }
 
     @media (min-width: 500px) {
-      body { background: #1b1015; }
+      body { background: #0f1c2e; }
     }
   </style>
 </head>
@@ -711,7 +711,7 @@
       loc.frequency.exponentialRampToValueAtTime(320, t0 + dai);
 
       const gN = ctx.createGain();
-      gN.gain.setValueAtTime(0.34, t0);
+      gN.gain.setValueAtTime(0.5, t0);
       gN.gain.exponentialRampToValueAtTime(0.0001, t0 + dai);
 
       nguon.connect(loc); loc.connect(gN); gN.connect(ctx.destination);
@@ -937,6 +937,7 @@
 
     /* ---------- TUNG MŨ ---------- */
     function tungMu() {
+      moHopAm();                 // đánh thức hộp âm thanh cho chắc
       document.getElementById("nutTungMu").disabled = true;
       document.getElementById("muBay").classList.add("bay");
       amMuBay();                 // tiếng mũ bay vút lên
