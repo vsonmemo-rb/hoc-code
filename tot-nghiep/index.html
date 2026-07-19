@@ -641,10 +641,29 @@
        =================================================== */
     let hopAm = null;
     function moHopAm() {
-      if (!hopAm) hopAm = new (window.AudioContext || window.webkitAudioContext)();
+      if (!hopAm) {
+        hopAm = new (window.AudioContext || window.webkitAudioContext)();
+
+        // iPhone: xin phép phát tiếng kể cả khi gạt nút im lặng (Safari 16.4+)
+        try {
+          if (navigator.audioSession) navigator.audioSession.type = "playback";
+        } catch (e) { /* trình duyệt cũ thì bỏ qua */ }
+
+        // Mẹo "mở khoá": phát một đoạn im lặng cực ngắn để đánh thức loa
+        try {
+          const im = hopAm.createBuffer(1, 1, hopAm.sampleRate);
+          const ng = hopAm.createBufferSource();
+          ng.buffer = im;
+          ng.connect(hopAm.destination);
+          ng.start(0);
+        } catch (e) { /* bỏ qua */ }
+      }
       if (hopAm.state === "suspended") hopAm.resume();
       return hopAm;
     }
+
+    // Điện thoại yếu hơn máy tính -> giảm bớt số tiếng nổ cho khỏi rối
+    const laDienThoai = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     // Nốt đơn (dùng cho tiếng bấm)
     function phatNot(tanSo, doDai, doTo, tre, dang) {
@@ -1015,10 +1034,11 @@
         { x:.50, y:.44, n:120, co:1.7, tre: 3400 }
       ];
 
-      dot.forEach(function (d) {
+      dot.forEach(function (d, i) {
         setTimeout(function () {
           noPhao(d.x, d.y, d.n, d.co);
-          amPhaoNo();
+          // Máy tính: nổ tiếng mọi đợt. Điện thoại: cách một đợt cho khỏi chồng tiếng
+          if (!laDienThoai || i % 2 === 0 || i >= 14) amPhaoNo();
         }, d.tre);
       });
     }
