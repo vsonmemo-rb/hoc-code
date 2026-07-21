@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard Quảng cáo Facebook</title>
 
+  <!-- ==========================================================
+       THƯ VIỆN BÊN NGOÀI — Chart.js (dùng để vẽ biểu đồ)
+       Đây là "code người khác viết sẵn", ta chỉ việc gọi ra dùng.
+       Tải từ CDN = kho chứa thư viện công cộng trên internet.
+       ========================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
   <style>
     /* ==========================================================
        BẢNG MÀU & THAM SỐ CHUNG
@@ -178,6 +185,32 @@
 
     .trong { text-align: center; color: var(--chu-mo); padding: 34px 20px; font-size: 13.5px; }
 
+    /* ---------- BIỂU ĐỒ ----------
+       Màu series lấy từ bảng màu đã kiểm định cho biểu đồ,
+       KHÁC với màu thương hiệu của trang — vì màu series phải
+       phân biệt được với người mù màu. */
+    .vungBieuDo {
+      --series-chiPhi:  #2a78d6;   /* xanh dương  — ô số 1 */
+      --series-doanhThu:#008300;   /* xanh lá     — ô số 2 */
+      --series-roas:    #2a78d6;
+      --nguong:         #d03b3b;   /* đỏ cảnh báo — dành riêng cho ngưỡng */
+      --luoi:           #e1e0d9;   /* lưới mảnh, chìm */
+      --chuTruc:        #898781;
+      position: relative;
+      height: 300px;
+    }
+    .hangBieuDo {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 900px) {
+      .hangBieuDo { grid-template-columns: 1fr; }
+    }
+    .baoLoiBieuDo {
+      text-align: center; color: var(--chu-mo); font-size: 13px;
+      padding: 40px 20px; line-height: 1.7;
+    }
+
     @media (max-width: 640px) {
       .buoc .ten { width: 100px; font-size: 12px; }
       .buoc .tiLe { display: none; }
@@ -229,6 +262,21 @@
 
   <!-- ============ THẺ CHỈ SỐ TỔNG ============ -->
   <div class="hangThe" id="hangThe"></div>
+
+  <!-- ============ BIỂU ĐỒ XU HƯỚNG ============ -->
+  <div class="hangBieuDo">
+    <div class="the">
+      <h2>💵 Chi phí &amp; Doanh thu theo ngày</h2>
+      <p class="moTa">Cùng đơn vị đô-la nên vẽ chung một biểu đồ</p>
+      <div class="vungBieuDo"><canvas id="bdTien"></canvas></div>
+    </div>
+
+    <div class="the">
+      <h2>📈 ROAS theo ngày</h2>
+      <p class="moTa">ROAS là tỉ lệ, khác đơn vị với tiền nên phải tách riêng</p>
+      <div class="vungBieuDo"><canvas id="bdRoas"></canvas></div>
+    </div>
+  </div>
 
   <!-- ============ PHỄU KHÁCH HÀNG ============ -->
   <div class="the">
@@ -551,10 +599,152 @@ function doiSapXep(khoa) {
 }
 
 /* --------------------------------------------------------------
+   9b. BIỂU ĐỒ — dùng thư viện Chart.js
+   -------------------------------------------------------------- */
+
+// Giữ lại biểu đồ đã vẽ để lần sau xoá đi vẽ mới, tránh chồng lớp
+let bieuDoTien = null;
+let bieuDoRoas = null;
+
+// Lấy dữ liệu theo ngày, sắp xếp tăng dần
+function duLieuTheoNgay() {
+  return gopTheo("ngay").sort(function (a, b) {
+    return a.ten.localeCompare(b.ten);
+  });
+}
+
+// Phần cấu hình dùng chung cho cả hai biểu đồ
+function cauHinhChung(nhanTrucY) {
+  const doc = getComputedStyle(document.querySelector(".vungBieuDo"));
+  const mauLuoi   = doc.getPropertyValue("--luoi").trim();
+  const mauChuTruc = doc.getPropertyValue("--chuTruc").trim();
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },   // rê chuột đâu cũng bắt được
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+        align: "end",
+        labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: "circle",
+                  color: mauChuTruc, font: { size: 12 } }
+      },
+      tooltip: {
+        backgroundColor: "#1e2b3d",
+        padding: 11,
+        cornerRadius: 8,
+        titleFont: { size: 12 },
+        bodyFont: { size: 12.5 }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: mauChuTruc, font: { size: 11 } },
+        border: { color: mauLuoi }
+      },
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: nhanTrucY, color: mauChuTruc, font: { size: 11 } },
+        grid: { color: mauLuoi, drawTicks: false },       // lưới mảnh, LIỀN NÉT
+        ticks: { color: mauChuTruc, font: { size: 11 } },
+        border: { display: false }
+      }
+    }
+  };
+}
+
+function veBieuDo() {
+  // Không tải được thư viện (mất mạng) -> báo cho người dùng biết
+  if (typeof Chart === "undefined") {
+    document.querySelectorAll(".vungBieuDo").forEach(function (v) {
+      v.innerHTML = '<div class="baoLoiBieuDo">Không tải được thư viện biểu đồ.<br>' +
+                    'Cần có mạng để tải Chart.js từ internet.</div>';
+    });
+    return;
+  }
+
+  const ds = duLieuTheoNgay();
+  const nhan = ds.map(function (d) { return d.ten; });
+  const doc = getComputedStyle(document.querySelector(".vungBieuDo"));
+  const mauChiPhi   = doc.getPropertyValue("--series-chiPhi").trim();
+  const mauDoanhThu = doc.getPropertyValue("--series-doanhThu").trim();
+  const mauRoas     = doc.getPropertyValue("--series-roas").trim();
+  const mauNguong   = doc.getPropertyValue("--nguong").trim();
+
+  /* ----- Biểu đồ 1: Chi phí & Doanh thu (cùng đơn vị $) ----- */
+  if (bieuDoTien) bieuDoTien.destroy();
+  bieuDoTien = new Chart(document.getElementById("bdTien"), {
+    type: "bar",
+    data: {
+      labels: nhan,
+      datasets: [
+        {
+          label: "Chi phí",
+          data: ds.map(function (d) { return Math.round(d.chiPhi); }),
+          borderColor: mauChiPhi,
+          backgroundColor: mauChiPhi,
+          borderWidth: 2,          // nét mảnh
+          pointRadius: 4,          // chấm 8px
+          pointHoverRadius: 6,
+          tension: 0.25
+        },
+        {
+          label: "Doanh thu",
+          data: ds.map(function (d) { return Math.round(d.doanhThu); }),
+          borderColor: mauDoanhThu,
+          backgroundColor: mauDoanhThu,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.25
+        }
+      ]
+    },
+    options: cauHinhChung("USD")
+  });
+
+  /* ----- Biểu đồ 2: ROAS (đơn vị tỉ lệ, tách riêng) ----- */
+  const ng = layNguong();
+  if (bieuDoRoas) bieuDoRoas.destroy();
+  bieuDoRoas = new Chart(document.getElementById("bdRoas"), {
+    type: "line",
+    data: {
+      labels: nhan,
+      datasets: [
+        {
+          label: "ROAS",
+          data: ds.map(function (d) { return Number(d.roas.toFixed(2)); }),
+          borderColor: mauRoas,
+          backgroundColor: mauRoas,
+          borderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.25
+        },
+        {
+          label: "Ngưỡng (" + ng.roasMin + ")",
+          data: nhan.map(function () { return ng.roasMin; }),
+          borderColor: mauNguong,
+          backgroundColor: mauNguong,
+          borderWidth: 1.5,
+          pointRadius: 0,
+          pointHoverRadius: 0
+        }
+      ]
+    },
+    options: cauHinhChung("Lần")
+  });
+}
+
+/* --------------------------------------------------------------
    10. VẼ LẠI TOÀN BỘ — gọi hàm này sau mỗi thay đổi
    -------------------------------------------------------------- */
 function veLai() {
   veTheChiSo();
+  veBieuDo();
   vePheu();
   veBang();
 }
