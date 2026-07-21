@@ -1,0 +1,23 @@
+# ==========================================================
+# .gitignore — DANH SÁCH FILE KHÔNG ĐẨY LÊN GITHUB
+# Git sẽ "giả vờ không thấy" những file khớp các dòng dưới đây
+# ==========================================================
+
+# --- DỮ LIỆU KINH DOANH THẬT (tuyệt đối không công khai) ---
+dashboard-ads/*.csv
+dashboard-ads/*.xlsx
+dashboard-ads/*.xls
+!dashboard-ads/du-lieu-mau.csv
+
+# --- FILE CHỨA MẬT KHẨU / API KEY ---
+.env
+*.key
+*token*
+
+# --- FILE TẠM CỦA HỆ ĐIỀU HÀNH ---
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# --- FILE TẠM CỦA OFFICE ---
+~$*

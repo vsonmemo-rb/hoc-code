@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buổi 8 — Máy tính thuế TNCN</title>
+
+  <style>
+    body {
+      margin: 0; padding: 30px 18px 60px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #eef4fb; color: #23364d;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .the {
+      background: #fff; width: 100%; max-width: 560px;
+      border-radius: 18px; padding: 28px 26px;
+      box-shadow: 0 10px 30px rgba(20,60,110,.12);
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 23px; margin: 0 0 6px; }
+    h2 { font-size: 17px; margin: 0 0 14px; }
+    .phu { color: #7a8ea3; font-size: 14px; margin: 0 0 22px; }
+
+    label { display: block; font-size: 13px; font-weight: 600; margin: 16px 0 6px; }
+    input {
+      width: 100%; padding: 12px 14px; font-size: 16px;
+      border: 2px solid #d7e3f0; border-radius: 10px;
+      font-family: inherit; color: #23364d;
+    }
+    input:focus { outline: none; border-color: #2f7fd4; }
+
+    button {
+      width: 100%; margin-top: 22px; padding: 15px;
+      font-family: inherit; font-size: 16px; font-weight: 600;
+      color: #fff; background: #2f7fd4;
+      border: none; border-radius: 999px; cursor: pointer;
+    }
+    button:hover { background: #1f66b5; }
+
+    .ketQua { background: #f4f9ff; border-radius: 14px; padding: 20px; margin-top: 22px; }
+    .dong {
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 9px 0; border-bottom: 1px dashed #d7e3f0; font-size: 15px;
+    }
+    .dong:last-child { border-bottom: none; }
+    .tong { font-weight: 700; font-size: 18px; color: #1f66b5; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { padding: 9px 8px; text-align: left; border-bottom: 1px solid #e6eef7; }
+    th { color: #7a8ea3; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+    td.so { text-align: right; }
+    tr.cham td { background: #eaf4ff; font-weight: 600; }
+
+    .ghiChu { font-size: 13px; color: #7a8ea3; line-height: 1.65; }
+    code { background: #eaf2fb; padding: 2px 7px; border-radius: 5px; font-size: 13px; color: #1f66b5; }
+    .canhBao {
+      background: #fff8e6; border-left: 4px solid #f0b429;
+      padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="the">
+    <h1>🧾 Máy tính thuế TNCN</h1>
+    <p class="phu">Buổi 8 — thực hành if/else & vòng lặp</p>
+
+    <label for="oLuong">Thu nhập một tháng (VNĐ)</label>
+    <input type="number" id="oLuong" value="30000000">
+
+    <label for="oPhuThuoc">Số người phụ thuộc</label>
+    <input type="number" id="oPhuThuoc" value="0" min="0">
+
+    <button onclick="tinhThue()">Tính thuế</button>
+
+    <div class="ketQua" id="ketQua" style="display:none;">
+      <div class="dong"><span>Thu nhập</span>          <span id="rLuong"></span></div>
+      <div class="dong"><span>Giảm trừ bản thân</span> <span id="rBanThan"></span></div>
+      <div class="dong"><span>Giảm trừ phụ thuộc</span><span id="rPhuThuoc"></span></div>
+      <div class="dong"><span>Thu nhập tính thuế</span><span id="rChiuThue"></span></div>
+      <div class="dong tong"><span>Thuế phải nộp</span><span id="rThue"></span></div>
+      <div class="dong tong"><span>Thực nhận</span>    <span id="rThucNhan"></span></div>
+    </div>
+  </div>
+
+  <div class="the" id="theBac" style="display:none;">
+    <h2>Chi tiết từng bậc thuế</h2>
+    <table>
+      <thead>
+        <tr><th>Bậc</th><th>Khoảng thu nhập</th><th>Thuế suất</th><th class="so">Thuế</th></tr>
+      </thead>
+      <tbody id="bangBac"></tbody>
+    </table>
+  </div>
+
+  <div class="the">
+    <p class="canhBao">
+      ⚠️ <b>Lưu ý:</b> mức giảm trừ và biểu thuế có thể được nhà nước điều chỉnh theo từng thời kỳ.
+      Bạn nên kiểm tra quy định hiện hành rồi sửa lại các con số trong phần
+      <code>THAM SỐ CÓ THỂ ĐỔI</code> ở đầu đoạn code.
+    </p>
+  </div>
+
+  <script>
+    /* ============================================================
+       BUỔI 8 — IF/ELSE & VÒNG LẶP
+       ============================================================ */
+
+    // ---------- THAM SỐ CÓ THỂ ĐỔI ----------
+    const giamTruBanThan  = 11000000;   // giảm trừ cho chính mình / tháng
+    const giamTruMoiNguoi =  4400000;   // giảm trừ mỗi người phụ thuộc / tháng
+
+    // BIỂU THUẾ LŨY TIẾN — một DANH SÁCH, mỗi phần tử là một bậc
+    // den: trần của bậc (Infinity = không giới hạn), suat: thuế suất
+    const bieuThue = [
+      { den:  5000000, suat: 0.05 },
+      { den: 10000000, suat: 0.10 },
+      { den: 18000000, suat: 0.15 },
+      { den: 32000000, suat: 0.20 },
+      { den: 52000000, suat: 0.25 },
+      { den: 80000000, suat: 0.30 },
+      { den: Infinity, suat: 0.35 }
+    ];
+
+    function tinhThue() {
+      // Nhớ Buổi 7: ô nhập trả về CHUỖI, phải đổi sang SỐ
+      const luong     = Number(document.getElementById("oLuong").value);
+      const soPhuThuoc = Number(document.getElementById("oPhuThuoc").value);
+
+      // ---------- IF/ELSE: kiểm tra dữ liệu nhập ----------
+      if (luong <= 0) {
+        alert("Thu nhập phải lớn hơn 0 nhé!");
+        return;                       // dừng hàm, không tính tiếp
+      }
+
+      // Tính phần thu nhập phải chịu thuế
+      const tongGiamTru = giamTruBanThan + giamTruMoiNguoi * soPhuThuoc;
+      let chiuThue = luong - tongGiamTru;
+
+      // ---------- IF: thu nhập thấp thì không phải nộp thuế ----------
+      if (chiuThue < 0) {
+        chiuThue = 0;
+      }
+
+      // ---------- VÒNG LẶP: chạy qua từng bậc thuế ----------
+      let tongThue = 0;      // let vì giá trị sẽ thay đổi liên tục
+      let danCanh = 0;       // mốc dưới của bậc đang xét
+      const chiTiet = [];    // danh sách để hiện bảng chi tiết
+
+      for (let i = 0; i < bieuThue.length; i++) {
+        const bac = bieuThue[i];
+
+        // NẾU thu nhập chưa vượt mốc dưới -> hết bậc để tính, thoát vòng lặp
+        if (chiuThue <= danCanh) {
+          break;
+        }
+
+        // Phần thu nhập rơi vào ĐÚNG bậc này
+        const tranBac = Math.min(chiuThue, bac.den);
+        const phanTrongBac = tranBac - danCanh;
+        const thueBac = phanTrongBac * bac.suat;
+
+        tongThue = tongThue + thueBac;
+
+        chiTiet.push({
+          so: i + 1,
+          tu: danCanh,
+          den: bac.den,
+          suat: bac.suat,
+          phan: phanTrongBac,
+          thue: thueBac
+        });
+
+        danCanh = bac.den;   // sang bậc kế tiếp
+      }
+
+      // ---------- HIỆN KẾT QUẢ ----------
+      document.getElementById("rLuong").textContent     = tien(luong);
+      document.getElementById("rBanThan").textContent   = "− " + tien(giamTruBanThan);
+      document.getElementById("rPhuThuoc").textContent  = "− " + tien(giamTruMoiNguoi * soPhuThuoc);
+      document.getElementById("rChiuThue").textContent  = tien(chiuThue);
+      document.getElementById("rThue").textContent      = tien(tongThue);
+      document.getElementById("rThucNhan").textContent  = tien(luong - tongThue);
+      document.getElementById("ketQua").style.display   = "block";
+
+      veBangBac(chiTiet);
+    }
+
+    // Vẽ bảng chi tiết từng bậc — lại một vòng lặp nữa
+    function veBangBac(chiTiet) {
+      const bang = document.getElementById("bangBac");
+      const theBac = document.getElementById("theBac");
+
+      // IF: không có bậc nào thì ẩn bảng đi
+      if (chiTiet.length === 0) {
+        theBac.style.display = "none";
+        return;
+      }
+
+      let html = "";
+      for (let i = 0; i < chiTiet.length; i++) {
+        const c = chiTiet[i];
+        const denChu = (c.den === Infinity) ? "trở lên" : "đến " + trieu(c.den);
+        html += '<tr class="cham">' +
+                  '<td>Bậc ' + c.so + '</td>' +
+                  '<td>' + trieu(c.tu) + ' ' + denChu + '</td>' +
+                  '<td>' + (c.suat * 100) + '%</td>' +
+                  '<td class="so">' + tien(c.thue) + '</td>' +
+                '</tr>';
+      }
+      bang.innerHTML = html;
+      theBac.style.display = "block";
+    }
+
+    // 1000000 -> "1.000.000 đ"
+    function tien(so) {
+      return Math.round(so).toLocaleString("vi-VN") + " đ";
+    }
+    // 5000000 -> "5tr"
+    function trieu(so) {
+      if (so === Infinity) return "";
+      return (so / 1000000) + "tr";
+    }
+
+    tinhThue();   // tính sẵn khi mở trang
+  </script>
+
+</body>
+</html>

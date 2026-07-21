@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Quảng cáo Facebook</title>
+
+  <style>
+    /* ==========================================================
+       BẢNG MÀU & THAM SỐ CHUNG
+       ========================================================== */
+    :root {
+      --nen:        #f4f7fb;
+      --the:        #ffffff;
+      --vien:       #e3eaf3;
+      --chu:        #1e2b3d;
+      --chu-mo:     #7386a0;
+      --xanh:       #be123c;
+      --xanh-nhat:  #eff5ff;
+      --tot:        #16a34a;
+      --tot-nen:    #eafaf0;
+      --xau:        #dc2626;
+      --xau-nen:    #fdecec;
+      --canh:       #d97706;
+      --canh-nen:   #fff7e8;
+      --bong:       0 1px 3px rgba(30,60,110,.08), 0 6px 20px rgba(30,60,110,.06);
+      --bo:         14px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--nen);
+      color: var(--chu);
+      font-size: 14px;
+    }
+
+    .khung { max-width: 1280px; margin: 0 auto; padding: 26px 20px 70px; }
+
+    /* ---------- ĐẦU TRANG ---------- */
+    .dauTrang {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 22px;
+    }
+    .dauTrang h1 { font-size: 22px; margin: 0 0 4px; }
+    .dauTrang p  { margin: 0; color: var(--chu-mo); font-size: 13px; }
+
+    .nutTai {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 18px; border-radius: 10px; cursor: pointer;
+      background: var(--xanh); color: #fff; font-weight: 600; font-size: 13.5px;
+      border: none; font-family: inherit;
+    }
+    .nutTai:hover { filter: brightness(0.88); }
+
+    .nutPhu {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 11px 16px; border-radius: 10px; cursor: pointer;
+      background: var(--the); color: var(--chu-mo);
+      border: 1px solid var(--vien); font-weight: 600; font-size: 13.5px;
+      font-family: inherit; margin-left: 8px;
+    }
+    .nutPhu:hover { color: var(--xau); border-color: var(--xau); }
+
+    /* ---------- KHU KÉO THẢ FILE ---------- */
+    .khuTai {
+      background: var(--the); border: 2px dashed var(--vien);
+      border-radius: var(--bo); padding: 22px;
+      text-align: center; color: var(--chu-mo); margin-bottom: 22px;
+      transition: all .2s ease;
+    }
+    .khuTai.dangKeo { border-color: var(--xanh); background: var(--xanh-nhat); }
+    .khuTai b { color: var(--chu); }
+
+    /* ---------- THẺ CHỈ SỐ ---------- */
+    .hangThe {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+      gap: 13px; margin-bottom: 22px;
+    }
+    .theSo {
+      background: var(--the); border: 1px solid var(--vien);
+      border-radius: var(--bo); padding: 15px 16px; box-shadow: var(--bong);
+    }
+    .theSo .nhan {
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--chu-mo); font-weight: 600; margin-bottom: 7px;
+    }
+    .theSo .giaTri { font-size: 21px; font-weight: 700; }
+    .theSo .phu { font-size: 11.5px; color: var(--chu-mo); margin-top: 3px; }
+    .theSo.tot .giaTri { color: var(--tot); }
+    .theSo.xau .giaTri { color: var(--xau); }
+
+    /* ---------- THẺ CHUNG ---------- */
+    .the {
+      background: var(--the); border: 1px solid var(--vien);
+      border-radius: var(--bo); box-shadow: var(--bong);
+      padding: 20px; margin-bottom: 22px;
+    }
+    .the h2 {
+      font-size: 15.5px; margin: 0 0 4px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .the .moTa { color: var(--chu-mo); font-size: 12.5px; margin: 0 0 16px; }
+
+    /* ---------- TAB CHỌN CẤP ---------- */
+    .hangTab { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tab {
+      padding: 8px 15px; border-radius: 8px; cursor: pointer;
+      border: 1px solid var(--vien); background: var(--the);
+      font-family: inherit; font-size: 13px; color: var(--chu-mo); font-weight: 500;
+    }
+    .tab.chon { background: var(--xanh); border-color: var(--xanh); color: #fff; font-weight: 600; }
+
+    /* ---------- BẢNG ---------- */
+    .cuonBang { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+    th, td { padding: 10px 11px; text-align: right; border-bottom: 1px solid var(--vien); }
+    th {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+      color: var(--chu-mo); font-weight: 600; cursor: pointer; user-select: none;
+      position: sticky; top: 0; background: var(--the);
+    }
+    th:hover { color: var(--xanh); }
+    th.trai, td.trai { text-align: left; white-space: normal; min-width: 200px; }
+    tbody tr:hover { background: #fafcff; }
+
+    .nhanTT {
+      display: inline-block; padding: 3px 9px; border-radius: 999px;
+      font-size: 11px; font-weight: 600;
+    }
+    .nhanTT.tot  { background: var(--tot-nen);  color: var(--tot); }
+    .nhanTT.xau  { background: var(--xau-nen);  color: var(--xau); }
+    .nhanTT.canh { background: var(--canh-nen); color: var(--canh); }
+
+    td.soTot { color: var(--tot); font-weight: 600; }
+    td.soXau { color: var(--xau); font-weight: 600; }
+
+    /* ---------- PHỄU KHÁCH HÀNG ---------- */
+    .buoc {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 9px;
+    }
+    .buoc .ten { width: 150px; font-size: 13px; flex-shrink: 0; }
+    .buoc .thanhNen {
+      flex: 1; height: 34px; background: #eef3fa;
+      border-radius: 8px; overflow: hidden; position: relative;
+    }
+    .buoc .thanh {
+      height: 100%; border-radius: 8px;
+      background: var(--xanh);
+      display: flex; align-items: center; padding-left: 11px;
+      color: #fff; font-size: 12.5px; font-weight: 600;
+      transition: width .8s cubic-bezier(.3,1,.4,1);
+    }
+    .buoc .soLuong { width: 92px; text-align: right; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+    .buoc .tiLe { width: 118px; text-align: right; font-size: 12px; flex-shrink: 0; }
+    .buoc .tiLe.kem { color: var(--xau); font-weight: 700; }
+
+    .canhBaoPheu {
+      margin-top: 16px; padding: 13px 16px; border-radius: 10px;
+      background: var(--canh-nen); border-left: 4px solid var(--canh);
+      font-size: 13px; line-height: 1.65;
+    }
+
+    /* ---------- CÀI ĐẶT NGƯỠNG ---------- */
+    .hangNguong { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-end; }
+    .oNguong label {
+      display: block; font-size: 11.5px; font-weight: 600;
+      color: var(--chu-mo); margin-bottom: 5px; text-transform: uppercase;
+    }
+    .oNguong input {
+      width: 130px; padding: 9px 11px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--vien); border-radius: 8px; color: var(--chu);
+    }
+    .oNguong input:focus { outline: none; border-color: var(--xanh); }
+
+    .trong { text-align: center; color: var(--chu-mo); padding: 34px 20px; font-size: 13.5px; }
+
+    @media (max-width: 640px) {
+      .buoc .ten { width: 100px; font-size: 12px; }
+      .buoc .tiLe { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="khung">
+
+  <!-- ============ ĐẦU TRANG ============ -->
+  <div class="dauTrang">
+    <div>
+      <h1>📊 Dashboard Quảng cáo Facebook</h1>
+      <p id="thongTinDuLieu">Đang dùng dữ liệu mẫu — tải file CSV của bạn lên để xem số thật</p>
+    </div>
+    <div>
+      <input type="file" id="oFile" accept=".csv" style="display:none">
+      <button class="nutTai" onclick="document.getElementById('oFile').click()">
+        ⬆ Tải file CSV
+      </button>
+      <button class="nutPhu" id="nutXoaKho" onclick="xoaKho()" style="display:none">
+        🗑 Xoá dữ liệu đã lưu
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ KÉO THẢ FILE ============ -->
+  <div class="khuTai" id="khuTai">
+    <b>Kéo file CSV xuất từ Ads Manager vào đây</b><br>
+    hoặc bấm nút "Tải file CSV" ở trên
+  </div>
+
+  <!-- ============ NGƯỠNG TỐI ƯU ============ -->
+  <div class="the">
+    <h2>🎯 Ngưỡng tối ưu</h2>
+    <p class="moTa">Đặt ngưỡng để dashboard tự đánh dấu chiến dịch tốt / cần xem lại</p>
+    <div class="hangNguong">
+      <div class="oNguong">
+        <label>ROAS tối thiểu</label>
+        <input type="number" id="oRoasMin" value="0.8" step="0.1" oninput="veLai()">
+      </div>
+      <div class="oNguong">
+        <label>CAC tối đa ($)</label>
+        <input type="number" id="oCacMax" value="40" step="1" oninput="veLai()">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ THẺ CHỈ SỐ TỔNG ============ -->
+  <div class="hangThe" id="hangThe"></div>
+
+  <!-- ============ PHỄU KHÁCH HÀNG ============ -->
+  <div class="the">
+    <h2>🔻 Phễu hành trình khách hàng</h2>
+    <p class="moTa">Xem khách rơi rụng nhiều nhất ở bước nào để biết chỗ cần tối ưu</p>
+    <div id="khungPheu"></div>
+    <div id="canhBaoPheu"></div>
+  </div>
+
+  <!-- ============ BẢNG CHI TIẾT ============ -->
+  <div class="the">
+    <h2>📋 Chi tiết hiệu quả</h2>
+    <p class="moTa">Bấm vào tiêu đề cột để sắp xếp</p>
+
+    <div class="hangTab" id="hangTab">
+      <button class="tab chon" data-cap="chienDich">Theo chiến dịch</button>
+      <button class="tab"      data-cap="nhomQC">Theo nhóm quảng cáo</button>
+      <button class="tab"      data-cap="mauQC">Theo mẫu quảng cáo</button>
+      <button class="tab"      data-cap="ngay">Theo ngày</button>
+    </div>
+
+    <div class="cuonBang">
+      <table>
+        <thead id="dauBang"></thead>
+        <tbody id="thanBang"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ==============================================================
+   DASHBOARD QUẢNG CÁO — BUỔI 9
+   Code chia thành các HÀM nhỏ, mỗi hàm làm ĐÚNG MỘT VIỆC
+   ============================================================== */
+
+/* --------------------------------------------------------------
+   1. TRẠNG THÁI CHUNG
+   -------------------------------------------------------------- */
+let duLieuGoc = [];          // toàn bộ dòng dữ liệu
+let capDangXem = "chienDich"; // cấp đang hiển thị
+let cotSapXep = "chiPhi";     // đang sắp theo cột nào
+let giamDan = true;           // sắp giảm dần hay tăng dần
+
+// Các bước trong phễu — đổi thứ tự/thêm bước thì sửa ở đây
+const cacBuocPheu = [
+  { khoa: "reach",       ten: "Reach" },
+  { khoa: "engage",      ten: "Engagement" },
+  { khoa: "linkClick",   ten: "Link Click" },
+  { khoa: "pageView",    ten: "Page View" },
+  { khoa: "viewContent", ten: "View Content" },
+  { khoa: "addToCart",   ten: "Add to Cart" },
+  { khoa: "checkout",    ten: "Initiate Checkout" },
+  { khoa: "purchase",    ten: "Purchase" }
+];
+
+/* --------------------------------------------------------------
+   2. HÀM TIỆN ÍCH — mỗi hàm một việc nhỏ
+   -------------------------------------------------------------- */
+function tienUSD(so)  { return "$" + (so || 0).toLocaleString("en-US", { maximumFractionDigits: 0 }); }
+function soNguyen(so) { return (so || 0).toLocaleString("vi-VN"); }
+function phanTram(so) { return (so || 0).toFixed(2) + "%"; }
+function soLe(so, n)  { return (so || 0).toFixed(n === undefined ? 2 : n); }
+
+// Chia an toàn: mẫu số bằng 0 thì trả 0 thay vì lỗi
+function chia(tu, mau) {
+  if (!mau) return 0;
+  return tu / mau;
+}
+
+/* --------------------------------------------------------------
+   3. TÍNH CÁC CHỈ SỐ PHÁI SINH
+   Đầu vào: một dòng đã cộng gộp -> Đầu ra: dòng đó kèm chỉ số
+   -------------------------------------------------------------- */
+function tinhChiSo(d) {
+  d.ctr  = chia(d.linkClick, d.hienThi) * 100;   // % click trên hiển thị
+  d.cpc  = chia(d.chiPhi, d.linkClick);          // giá mỗi click
+  d.cpm  = chia(d.chiPhi, d.hienThi) * 1000;     // giá mỗi 1000 hiển thị
+  d.cac  = chia(d.chiPhi, d.purchase);           // giá mỗi đơn hàng
+  d.roas = chia(d.doanhThu, d.chiPhi);           // doanh thu / chi phí
+  return d;
+}
+
+/* --------------------------------------------------------------
+   4. CỘNG GỘP DỮ LIỆU THEO CẤP
+   Ví dụ: gộp tất cả dòng cùng một chiến dịch lại thành 1 dòng
+   -------------------------------------------------------------- */
+function gopTheo(cap) {
+  const gio = {};   // giỏ chứa kết quả, khóa là tên chiến dịch/nhóm/...
+
+  for (let i = 0; i < duLieuGoc.length; i++) {
+    const d = duLieuGoc[i];
+    const khoa = d[cap];
+
+    // Chưa có giỏ cho khóa này thì tạo mới
+    if (!gio[khoa]) {
+      gio[khoa] = {
+        ten: khoa,
+        chiPhi: 0, hienThi: 0, reach: 0, engage: 0, linkClick: 0,
+        pageView: 0, viewContent: 0, addToCart: 0, checkout: 0,
+        purchase: 0, doanhThu: 0
+      };
+    }
+
+    // Cộng dồn từng chỉ số
+    const g = gio[khoa];
+    g.chiPhi      += d.chiPhi;
+    g.hienThi     += d.hienThi;
+    g.reach       += d.reach;
+    g.engage      += d.engage;
+    g.linkClick   += d.linkClick;
+    g.pageView    += d.pageView;
+    g.viewContent += d.viewContent;
+    g.addToCart   += d.addToCart;
+    g.checkout    += d.checkout;
+    g.purchase    += d.purchase;
+    g.doanhThu    += d.doanhThu;
+  }
+
+  // Đổi giỏ thành danh sách và tính chỉ số phái sinh
+  return Object.values(gio).map(tinhChiSo);
+}
+
+/* --------------------------------------------------------------
+   5. CỘNG GỘP TOÀN BỘ (cho hàng thẻ chỉ số trên cùng)
+   -------------------------------------------------------------- */
+function gopTatCa() {
+  const t = {
+    chiPhi: 0, hienThi: 0, reach: 0, engage: 0, linkClick: 0,
+    pageView: 0, viewContent: 0, addToCart: 0, checkout: 0,
+    purchase: 0, doanhThu: 0
+  };
+  duLieuGoc.forEach(function (d) {
+    for (const k in t) { t[k] += (d[k] || 0); }
+  });
+  return tinhChiSo(t);
+}
+
+/* --------------------------------------------------------------
+   6. ĐÁNH GIÁ TỐT / XẤU THEO NGƯỠNG
+   -------------------------------------------------------------- */
+function layNguong() {
+  return {
+    roasMin: Number(document.getElementById("oRoasMin").value),
+    cacMax:  Number(document.getElementById("oCacMax").value)
+  };
+}
+
+function danhGia(d) {
+  const ng = layNguong();
+  const roasDat = d.roas >= ng.roasMin;
+  // Chưa có đơn nào thì CAC vô nghĩa -> coi như chưa đạt
+  const cacDat  = d.purchase > 0 && d.cac <= ng.cacMax;
+
+  if (roasDat && cacDat) return { loai: "tot",  chu: "Tốt" };
+  if (roasDat || cacDat) return { loai: "canh", chu: "Xem lại" };
+  return { loai: "xau", chu: "Cần tắt" };
+}
+
+/* --------------------------------------------------------------
+   7. VẼ HÀNG THẺ CHỈ SỐ TỔNG
+   -------------------------------------------------------------- */
+function veTheChiSo() {
+  const t = gopTatCa();
+  const ng = layNguong();
+
+  const cacThe = [
+    { nhan: "Chi phí",   giaTri: tienUSD(t.chiPhi) },
+    { nhan: "Doanh thu", giaTri: tienUSD(t.doanhThu) },
+    { nhan: "ROAS",      giaTri: soLe(t.roas), loai: t.roas >= ng.roasMin ? "tot" : "xau",
+      phu: "ngưỡng ≥ " + ng.roasMin },
+    { nhan: "Purchase",  giaTri: soNguyen(t.purchase) },
+    { nhan: "CAC",       giaTri: tienUSD(t.cac),
+      loai: (t.purchase > 0 && t.cac <= ng.cacMax) ? "tot" : "xau",
+      phu: "ngưỡng ≤ $" + ng.cacMax },
+    { nhan: "Hiển thị",  giaTri: soNguyen(t.hienThi) },
+    { nhan: "Click",     giaTri: soNguyen(t.linkClick) },
+    { nhan: "CTR",       giaTri: phanTram(t.ctr) },
+    { nhan: "CPC",       giaTri: "$" + soLe(t.cpc) },
+    { nhan: "CPM",       giaTri: "$" + soLe(t.cpm) }
+  ];
+
+  let html = "";
+  cacThe.forEach(function (o) {
+    html += '<div class="theSo ' + (o.loai || "") + '">' +
+              '<div class="nhan">' + o.nhan + '</div>' +
+              '<div class="giaTri">' + o.giaTri + '</div>' +
+              (o.phu ? '<div class="phu">' + o.phu + '</div>' : '') +
+            '</div>';
+  });
+  document.getElementById("hangThe").innerHTML = html;
+}
+
+/* --------------------------------------------------------------
+   8. VẼ PHỄU KHÁCH HÀNG
+   Tính tỉ lệ chuyển đổi giữa các bước, tô đỏ bước rơi rụng nhiều nhất
+   -------------------------------------------------------------- */
+function vePheu() {
+  const t = gopTatCa();
+  const dinh = t[cacBuocPheu[0].khoa] || 1;   // số của bước đầu, làm mốc 100%
+
+  let html = "";
+  let buocTeNhat = null;
+  let tiLeTeNhat = 101;
+
+  for (let i = 0; i < cacBuocPheu.length; i++) {
+    const b = cacBuocPheu[i];
+    const soHienTai = t[b.khoa] || 0;
+    const rongPhanTram = chia(soHienTai, dinh) * 100;
+
+    // Tỉ lệ chuyển đổi so với BƯỚC LIỀN TRƯỚC
+    let chuTiLe = "";
+    if (i > 0) {
+      const soTruoc = t[cacBuocPheu[i - 1].khoa] || 0;
+      const tiLe = chia(soHienTai, soTruoc) * 100;
+      chuTiLe = "→ " + soLe(tiLe, 1) + "%";
+
+      if (soTruoc > 0 && tiLe < tiLeTeNhat) {
+        tiLeTeNhat = tiLe;
+        buocTeNhat = { tu: cacBuocPheu[i - 1].ten, den: b.ten, tiLe: tiLe };
+      }
+    }
+
+    const kem = (i > 0 && tiLeTeNhat === chia(soHienTai, t[cacBuocPheu[i-1].khoa] || 0) * 100);
+
+    html += '<div class="buoc">' +
+              '<div class="ten">' + b.ten + '</div>' +
+              '<div class="thanhNen">' +
+                '<div class="thanh" style="width:' + Math.max(rongPhanTram, 3) + '%">' +
+                  soLe(rongPhanTram, 1) + '%' +
+                '</div>' +
+              '</div>' +
+              '<div class="soLuong">' + soNguyen(soHienTai) + '</div>' +
+              '<div class="tiLe ' + (kem ? "kem" : "") + '">' + chuTiLe + '</div>' +
+            '</div>';
+  }
+  document.getElementById("khungPheu").innerHTML = html;
+
+  // Gợi ý chỗ cần tối ưu
+  let canhBao = "";
+  if (buocTeNhat) {
+    canhBao = '<div class="canhBaoPheu">' +
+      '⚠️ <b>Rơi rụng nhiều nhất:</b> từ <b>' + buocTeNhat.tu + '</b> sang <b>' +
+      buocTeNhat.den + '</b> — chỉ còn <b>' + soLe(buocTeNhat.tiLe, 1) + '%</b> đi tiếp.<br>' +
+      'Đây là khâu nên ưu tiên tối ưu trước.' +
+      '</div>';
+  }
+  document.getElementById("canhBaoPheu").innerHTML = canhBao;
+}
+
+/* --------------------------------------------------------------
+   9. VẼ BẢNG CHI TIẾT
+   -------------------------------------------------------------- */
+const cacCot = [
+  { khoa: "ten",      ten: "Tên",       trai: true },
+  { khoa: "chiPhi",   ten: "Chi phí",   dinhDang: tienUSD },
+  { khoa: "hienThi",  ten: "Hiển thị",  dinhDang: soNguyen },
+  { khoa: "linkClick",ten: "Click",     dinhDang: soNguyen },
+  { khoa: "ctr",      ten: "CTR",       dinhDang: phanTram },
+  { khoa: "cpc",      ten: "CPC",       dinhDang: function (v) { return "$" + soLe(v); } },
+  { khoa: "cpm",      ten: "CPM",       dinhDang: function (v) { return "$" + soLe(v); } },
+  { khoa: "purchase", ten: "Purchase",  dinhDang: soNguyen },
+  { khoa: "cac",      ten: "CAC",       dinhDang: tienUSD, toMau: "cac" },
+  { khoa: "doanhThu", ten: "Doanh thu", dinhDang: tienUSD },
+  { khoa: "roas",     ten: "ROAS",      dinhDang: function (v) { return soLe(v); }, toMau: "roas" }
+];
+
+function veBang() {
+  const ds = gopTheo(capDangXem);
+  const ng = layNguong();
+
+  // Sắp xếp
+  ds.sort(function (a, b) {
+    const x = a[cotSapXep], y = b[cotSapXep];
+    if (typeof x === "string") return giamDan ? y.localeCompare(x) : x.localeCompare(y);
+    return giamDan ? y - x : x - y;
+  });
+
+  // Vẽ tiêu đề cột
+  let dau = "<tr>";
+  cacCot.forEach(function (c) {
+    const mui = (cotSapXep === c.khoa) ? (giamDan ? " ▾" : " ▴") : "";
+    dau += '<th class="' + (c.trai ? "trai" : "") + '" onclick="doiSapXep(\'' + c.khoa + '\')">' +
+             c.ten + mui + '</th>';
+  });
+  dau += "<th>Trạng thái</th></tr>";
+  document.getElementById("dauBang").innerHTML = dau;
+
+  // Vẽ các dòng
+  if (ds.length === 0) {
+    document.getElementById("thanBang").innerHTML =
+      '<tr><td colspan="' + (cacCot.length + 1) + '" class="trong">Chưa có dữ liệu</td></tr>';
+    return;
+  }
+
+  let than = "";
+  ds.forEach(function (d) {
+    const dg = danhGia(d);
+    than += "<tr>";
+    cacCot.forEach(function (c) {
+      let lop = c.trai ? "trai" : "";
+      // Tô màu riêng cho ROAS và CAC theo ngưỡng
+      if (c.toMau === "roas") lop += d.roas >= ng.roasMin ? " soTot" : " soXau";
+      if (c.toMau === "cac")  lop += (d.purchase > 0 && d.cac <= ng.cacMax) ? " soTot" : " soXau";
+
+      const giaTri = c.dinhDang ? c.dinhDang(d[c.khoa]) : d[c.khoa];
+      than += '<td class="' + lop + '">' + giaTri + "</td>";
+    });
+    than += '<td><span class="nhanTT ' + dg.loai + '">' + dg.chu + "</span></td>";
+    than += "</tr>";
+  });
+  document.getElementById("thanBang").innerHTML = than;
+}
+
+function doiSapXep(khoa) {
+  if (cotSapXep === khoa) { giamDan = !giamDan; }
+  else { cotSapXep = khoa; giamDan = true; }
+  veBang();
+}
+
+/* --------------------------------------------------------------
+   10. VẼ LẠI TOÀN BỘ — gọi hàm này sau mỗi thay đổi
+   -------------------------------------------------------------- */
+function veLai() {
+  veTheChiSo();
+  vePheu();
+  veBang();
+}
+
+/* --------------------------------------------------------------
+   11. CHUYỂN TAB CẤP
+   -------------------------------------------------------------- */
+document.getElementById("hangTab").addEventListener("click", function (e) {
+  const nut = e.target.closest(".tab");
+  if (!nut) return;
+  document.querySelectorAll(".tab").forEach(function (t) { t.classList.remove("chon"); });
+  nut.classList.add("chon");
+  capDangXem = nut.dataset.cap;
+  veBang();
+});
+
+/* --------------------------------------------------------------
+   12. ĐỌC FILE CSV
+   -------------------------------------------------------------- */
+
+// Tên cột có thể khác nhau tuỳ ngôn ngữ export -> nhận nhiều tên
+const banDoCot = {
+  ngay:        ["day", "date", "ngày", "ngay", "reporting starts"],
+  chienDich:   ["campaign name", "tên chiến dịch", "chiến dịch", "campaign"],
+  nhomQC:      ["ad set name", "tên nhóm quảng cáo", "nhóm quảng cáo", "ad set"],
+  mauQC:       ["ad name", "tên quảng cáo", "quảng cáo", "ad"],
+  chiPhi:      ["amount spent (usd)", "amount spent", "số tiền đã chi tiêu", "chi phí", "spend"],
+  hienThi:     ["impressions", "lượt hiển thị", "hiển thị"],
+  reach:       ["reach", "người tiếp cận", "số người tiếp cận"],
+  engage:      ["post engagement", "engagement", "lượt tương tác với bài viết", "tương tác"],
+  linkClick:   ["link clicks", "lượt nhấp vào liên kết", "clicks (all)", "click"],
+  pageView:    ["landing page views", "lượt xem trang đích", "page view"],
+  viewContent: ["content views", "view content", "lượt xem nội dung"],
+  addToCart:   ["adds to cart", "add to cart", "lượt thêm vào giỏ hàng"],
+  checkout:    ["checkouts initiated", "initiate checkout", "lượt bắt đầu thanh toán"],
+  purchase:    ["purchases", "purchase", "lượt mua hàng", "đơn hàng"],
+  doanhThu:    ["purchases conversion value", "conversion value", "giá trị chuyển đổi mua hàng", "doanh thu"]
+};
+
+// Tách một dòng CSV, tôn trọng dấu nháy kép
+function tachDong(dong) {
+  const o = [];
+  let hienTai = "";
+  let trongNhay = false;
+  for (let i = 0; i < dong.length; i++) {
+    const c = dong[i];
+    if (c === '"') {
+      if (trongNhay && dong[i + 1] === '"') { hienTai += '"'; i++; }
+      else { trongNhay = !trongNhay; }
+    } else if (c === "," && !trongNhay) {
+      o.push(hienTai); hienTai = "";
+    } else {
+      hienTai += c;
+    }
+  }
+  o.push(hienTai);
+  return o;
+}
+
+// Tìm xem cột nào trong file khớp với chỉ số nào của ta
+function doTenCot(tieuDe) {
+  const kq = {};
+  const chuan = tieuDe.map(function (t) { return t.trim().toLowerCase(); });
+  for (const khoa in banDoCot) {
+    const cacTen = banDoCot[khoa];
+    for (let i = 0; i < chuan.length; i++) {
+      if (cacTen.indexOf(chuan[i]) !== -1) { kq[khoa] = i; break; }
+    }
+  }
+  return kq;
+}
+
+function doiSo(chuoi) {
+  if (chuoi === undefined || chuoi === null) return 0;
+  const s = String(chuoi).replace(/[^0-9.\-]/g, "");
+  const n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+
+function docCSV(vanBan) {
+  const dong = vanBan.split(/\r?\n/).filter(function (d) { return d.trim() !== ""; });
+  if (dong.length < 2) { alert("File không có dữ liệu."); return; }
+
+  const tieuDe = tachDong(dong[0]);
+  const viTri = doTenCot(tieuDe);
+
+  if (viTri.chiPhi === undefined) {
+    alert("Không tìm thấy cột chi phí trong file.\n\nCác cột đọc được:\n" + tieuDe.join(", "));
+    return;
+  }
+
+  const moi = [];
+  for (let i = 1; i < dong.length; i++) {
+    const o = tachDong(dong[i]);
+    const lay = function (khoa) { return viTri[khoa] !== undefined ? o[viTri[khoa]] : ""; };
+
+    moi.push({
+      ngay:        lay("ngay") || "(không rõ)",
+      chienDich:   lay("chienDich") || "(không rõ)",
+      nhomQC:      lay("nhomQC") || "(không rõ)",
+      mauQC:       lay("mauQC") || "(không rõ)",
+      chiPhi:      doiSo(lay("chiPhi")),
+      hienThi:     doiSo(lay("hienThi")),
+      reach:       doiSo(lay("reach")),
+      engage:      doiSo(lay("engage")),
+      linkClick:   doiSo(lay("linkClick")),
+      pageView:    doiSo(lay("pageView")),
+      viewContent: doiSo(lay("viewContent")),
+      addToCart:   doiSo(lay("addToCart")),
+      checkout:    doiSo(lay("checkout")),
+      purchase:    doiSo(lay("purchase")),
+      doanhThu:    doiSo(lay("doanhThu"))
+    });
+  }
+
+  duLieuGoc = moi;
+  luuVaoKho(moi);                       // ③ LƯU vào kho trình duyệt
+  capNhatDongTin(moi.length, false);
+  veLai();
+}
+
+/* --------------------------------------------------------------
+   12b. LƯU TRỮ — ghi dữ liệu vào kho của trình duyệt
+   -------------------------------------------------------------- */
+
+// Tên "ngăn tủ" riêng của dashboard này trong trình duyệt
+const TEN_KHO = "dashboardAds_duLieu";
+
+// ③ GHI VÀO KHO
+function luuVaoKho(ds) {
+  try {
+    // Kho chỉ chứa được CHUỖI, nên phải đổi danh sách thành chuỗi JSON
+    localStorage.setItem(TEN_KHO, JSON.stringify(ds));
+  } catch (e) {
+    // Kho đầy (thường giới hạn ~5MB) hoặc trình duyệt chặn
+    console.log("Không lưu được vào kho:", e);
+  }
+}
+
+// ④ ĐỌC LẠI TỪ KHO
+function docTuKho() {
+  try {
+    const chuoi = localStorage.getItem(TEN_KHO);
+    if (!chuoi) return null;              // kho trống
+    return JSON.parse(chuoi);             // đổi chuỗi ngược lại thành danh sách
+  } catch (e) {
+    return null;
+  }
+}
+
+// Xoá kho khi người dùng muốn
+function xoaKho() {
+  localStorage.removeItem(TEN_KHO);
+  duLieuGoc = taoDuLieuMau();
+  document.getElementById("thongTinDuLieu").textContent =
+    "Đã xoá dữ liệu đã lưu — đang dùng lại dữ liệu mẫu";
+  document.getElementById("nutXoaKho").style.display = "none";
+  veLai();
+}
+
+// Cập nhật dòng chữ mô tả nguồn dữ liệu
+function capNhatDongTin(soDong, tuKho) {
+  document.getElementById("thongTinDuLieu").textContent =
+    tuKho
+      ? "Đã tải lại " + soDong + " dòng từ dữ liệu đã lưu trước đó 💾"
+      : "Đã đọc " + soDong + " dòng từ file của bạn — đã lưu lại 💾";
+  document.getElementById("nutXoaKho").style.display = "inline-flex";
+}
+
+// Nút chọn file
+document.getElementById("oFile").addEventListener("change", function (e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const doc = new FileReader();
+  doc.onload = function () { docCSV(doc.result); };
+  doc.readAsText(f, "UTF-8");
+});
+
+// Kéo thả file
+const khuTai = document.getElementById("khuTai");
+khuTai.addEventListener("dragover", function (e) {
+  e.preventDefault(); khuTai.classList.add("dangKeo");
+});
+khuTai.addEventListener("dragleave", function () { khuTai.classList.remove("dangKeo"); });
+khuTai.addEventListener("drop", function (e) {
+  e.preventDefault(); khuTai.classList.remove("dangKeo");
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+  const doc = new FileReader();
+  doc.onload = function () { docCSV(doc.result); };
+  doc.readAsText(f, "UTF-8");
+});
+
+/* --------------------------------------------------------------
+   13. DỮ LIỆU MẪU — để dashboard chạy được ngay khi mở
+   -------------------------------------------------------------- */
+function taoDuLieuMau() {
+  const chienDich = [
+    { ten: "CD - Retarget Web",  cpm: 6.5,  ctrCo: 1.8, tyLeMua: 0.030, aov: 42 },
+    { ten: "CD - Broad Prospect", cpm: 4.2, ctrCo: 0.9, tyLeMua: 0.012, aov: 38 },
+    { ten: "CD - Lookalike 3%",  cpm: 5.4,  ctrCo: 1.3, tyLeMua: 0.021, aov: 45 },
+    { ten: "CD - Video View",    cpm: 3.1,  ctrCo: 0.6, tyLeMua: 0.007, aov: 35 }
+  ];
+  const ds = [];
+
+  for (let c = 0; c < chienDich.length; c++) {
+    const cd = chienDich[c];
+    for (let n = 1; n <= 2; n++) {            // 2 nhóm quảng cáo
+      for (let m = 1; m <= 2; m++) {          // 2 mẫu quảng cáo
+        for (let d = 1; d <= 7; d++) {        // 7 ngày
+          const bienDong = 0.75 + ((c + n + m + d) % 5) * 0.12;
+
+          const hienThi  = Math.round(9000 * bienDong);
+          const chiPhi   = (hienThi / 1000) * cd.cpm;
+          const reach    = Math.round(hienThi * 0.72);
+          const engage   = Math.round(reach * 0.11 * bienDong);
+          const click    = Math.round(hienThi * (cd.ctrCo / 100) * bienDong);
+          const pageView = Math.round(click * 0.78);
+          const viewCt   = Math.round(pageView * 0.62);
+          const addCart  = Math.round(viewCt * 0.28);
+          const checkout = Math.round(addCart * 0.45);
+          const purchase = Math.round(click * cd.tyLeMua * bienDong);
+
+          ds.push({
+            ngay: "2026-07-" + String(d + 8).padStart(2, "0"),
+            chienDich: cd.ten,
+            nhomQC: cd.ten + " / Nhóm " + n,
+            mauQC: cd.ten + " / Nhóm " + n + " / Mẫu " + m,
+            chiPhi: chiPhi,
+            hienThi: hienThi,
+            reach: reach,
+            engage: engage,
+            linkClick: click,
+            pageView: pageView,
+            viewContent: viewCt,
+            addToCart: addCart,
+            checkout: checkout,
+            purchase: purchase,
+            doanhThu: purchase * cd.aov
+          });
+        }
+      }
+    }
+  }
+  return ds;
+}
+
+/* --------------------------------------------------------------
+   14. KHỞI ĐỘNG
+   -------------------------------------------------------------- */
+// ④ Khi mở trang: thử lấy dữ liệu đã lưu ra trước.
+//    Có thì dùng, không có thì mới dùng dữ liệu mẫu.
+const daLuu = docTuKho();
+
+if (daLuu && daLuu.length > 0) {
+  duLieuGoc = daLuu;
+  capNhatDongTin(daLuu.length, true);
+} else {
+  duLieuGoc = taoDuLieuMau();
+}
+
+veLai();
+</script>
+
+</body>
+</html>
