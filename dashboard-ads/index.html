@@ -185,6 +185,42 @@
 
     .trong { text-align: center; color: var(--chu-mo); padding: 34px 20px; font-size: 13.5px; }
 
+    /* ---------- SO SÁNH KỲ ---------- */
+    .hangKy { display: flex; gap: 14px; flex-wrap: wrap; }
+    .oKy {
+      flex: 1; min-width: 210px;
+      border: 1px solid var(--vien); border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .oKy.kyNay { border-color: var(--xanh); background: var(--xanh-nhat); }
+    .oKy .nhanKy {
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--chu-mo); font-weight: 600; margin-bottom: 6px;
+    }
+    .oKy .khoangNgay { font-size: 16px; font-weight: 700; }
+    .oKy .soNgay { font-size: 12px; color: var(--chu-mo); margin-top: 3px; }
+    .thieuNgay {
+      color: var(--chu-mo); font-size: 13px; line-height: 1.6;
+      background: var(--canh-nen); border-left: 4px solid var(--canh);
+      padding: 12px 15px; border-radius: 9px;
+    }
+    .oNguong select {
+      width: 180px; padding: 9px 11px; font-size: 14px; font-family: inherit;
+      border: 1px solid var(--vien); border-radius: 8px; color: var(--chu);
+      background: var(--the);
+    }
+    .oNguong select:focus { outline: none; border-color: var(--xanh); }
+
+    /* ---------- MỨC THAY ĐỔI TRÊN THẺ CHỈ SỐ ---------- */
+    .doi {
+      font-size: 12px; font-weight: 600; margin-top: 5px;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .doi.tang-tot, .doi.giam-tot { color: var(--tot); }
+    .doi.tang-xau, .doi.giam-xau { color: var(--xau); }
+    .doi.trungTinh { color: var(--chu-mo); }
+    .doi .nhanKyTruoc { color: var(--chu-mo); font-weight: 400; }
+
     /* ---------- BIỂU ĐỒ ----------
        Màu series lấy từ bảng màu đã kiểm định cho biểu đồ,
        KHÁC với màu thương hiệu của trang — vì màu series phải
@@ -258,6 +294,25 @@
         <input type="number" id="oCacMax" value="40" step="1" oninput="veLai()">
       </div>
     </div>
+  </div>
+
+  <!-- ============ SO SÁNH KỲ ============ -->
+  <div class="the">
+    <h2>⏱️ So sánh kỳ</h2>
+    <p class="moTa">So kỳ gần nhất với kỳ liền trước có cùng số ngày</p>
+
+    <div class="oNguong" style="margin-bottom:16px">
+      <label>Độ dài mỗi kỳ</label>
+      <select id="oDoDaiKy" onchange="veLai()">
+        <option value="auto">Chia đôi dữ liệu</option>
+        <option value="3">3 ngày</option>
+        <option value="7">7 ngày</option>
+        <option value="14">14 ngày</option>
+        <option value="30">30 ngày</option>
+      </select>
+    </div>
+
+    <div id="khungSoSanh"></div>
   </div>
 
   <!-- ============ THẺ CHỈ SỐ TỔNG ============ -->
@@ -444,28 +499,39 @@ function veTheChiSo() {
   const t = gopTatCa();
   const ng = layNguong();
 
+  // Dữ liệu hai kỳ để tính mức thay đổi (null nếu không đủ ngày)
+  const kq = ketQuaSoSanh();
+
+  const tienLe = function (v) { return "$" + soLe(v); };
+
   const cacThe = [
-    { nhan: "Chi phí",   giaTri: tienUSD(t.chiPhi) },
-    { nhan: "Doanh thu", giaTri: tienUSD(t.doanhThu) },
-    { nhan: "ROAS",      giaTri: soLe(t.roas), loai: t.roas >= ng.roasMin ? "tot" : "xau",
-      phu: "ngưỡng ≥ " + ng.roasMin },
-    { nhan: "Purchase",  giaTri: soNguyen(t.purchase) },
-    { nhan: "CAC",       giaTri: tienUSD(t.cac),
-      loai: (t.purchase > 0 && t.cac <= ng.cacMax) ? "tot" : "xau",
-      phu: "ngưỡng ≤ $" + ng.cacMax },
-    { nhan: "Hiển thị",  giaTri: soNguyen(t.hienThi) },
-    { nhan: "Click",     giaTri: soNguyen(t.linkClick) },
-    { nhan: "CTR",       giaTri: phanTram(t.ctr) },
-    { nhan: "CPC",       giaTri: "$" + soLe(t.cpc) },
-    { nhan: "CPM",       giaTri: "$" + soLe(t.cpm) }
+    { nhan: "Chi phí",   khoa: "chiPhi",   dd: tienUSD,   huong: "trungTinh" },
+    { nhan: "Doanh thu", khoa: "doanhThu", dd: tienUSD,   huong: "tot" },
+    { nhan: "ROAS",      khoa: "roas",     dd: function (v) { return soLe(v); }, huong: "tot",
+      loai: t.roas >= ng.roasMin ? "tot" : "xau", phu: "ngưỡng ≥ " + ng.roasMin },
+    { nhan: "Purchase",  khoa: "purchase", dd: soNguyen,  huong: "tot" },
+    { nhan: "CAC",       khoa: "cac",      dd: tienUSD,   huong: "xau",
+      loai: (t.purchase > 0 && t.cac <= ng.cacMax) ? "tot" : "xau", phu: "ngưỡng ≤ $" + ng.cacMax },
+    { nhan: "Hiển thị",  khoa: "hienThi",  dd: soNguyen,  huong: "trungTinh" },
+    { nhan: "Click",     khoa: "linkClick",dd: soNguyen,  huong: "tot" },
+    { nhan: "CTR",       khoa: "ctr",      dd: phanTram,  huong: "tot" },
+    { nhan: "CPC",       khoa: "cpc",      dd: tienLe,    huong: "xau" },
+    { nhan: "CPM",       khoa: "cpm",      dd: tienLe,    huong: "xau" }
   ];
 
   let html = "";
   cacThe.forEach(function (o) {
+    // Mức thay đổi so kỳ trước — chỉ hiện khi đủ dữ liệu 2 kỳ
+    let mucDoi = "";
+    if (kq) {
+      mucDoi = veMucDoi(kq.nay[o.khoa], kq.truoc[o.khoa], o.huong, null);
+    }
+
     html += '<div class="theSo ' + (o.loai || "") + '">' +
               '<div class="nhan">' + o.nhan + '</div>' +
-              '<div class="giaTri">' + o.giaTri + '</div>' +
+              '<div class="giaTri">' + o.dd(t[o.khoa]) + '</div>' +
               (o.phu ? '<div class="phu">' + o.phu + '</div>' : '') +
+              mucDoi +
             '</div>';
   });
   document.getElementById("hangThe").innerHTML = html;
@@ -479,29 +545,41 @@ function vePheu() {
   const t = gopTatCa();
   const dinh = t[cacBuocPheu[0].khoa] || 1;   // số của bước đầu, làm mốc 100%
 
-  let html = "";
-  let buocTeNhat = null;
-  let tiLeTeNhat = 101;
+  // ===== LƯỢT 1: tính tỉ lệ từng bước và tìm bước tệ nhất =====
+  // Phải duyệt HẾT rồi mới biết bước nào tệ nhất, nên tách thành lượt riêng.
+  const cacTiLe = [];              // tỉ lệ so với bước trước (null ở bước đầu)
+  let viTriTeNhat = -1;
+  let tiLeTeNhat = Infinity;
 
+  for (let i = 0; i < cacBuocPheu.length; i++) {
+    if (i === 0) { cacTiLe.push(null); continue; }
+
+    const soTruoc   = t[cacBuocPheu[i - 1].khoa] || 0;
+    const soHienTai = t[cacBuocPheu[i].khoa] || 0;
+    const tiLe = chia(soHienTai, soTruoc) * 100;
+    cacTiLe.push(tiLe);
+
+    if (soTruoc > 0 && tiLe < tiLeTeNhat) {
+      tiLeTeNhat = tiLe;
+      viTriTeNhat = i;
+    }
+  }
+
+  const buocTeNhat = (viTriTeNhat > 0)
+    ? { tu: cacBuocPheu[viTriTeNhat - 1].ten,
+        den: cacBuocPheu[viTriTeNhat].ten,
+        tiLe: tiLeTeNhat }
+    : null;
+
+  // ===== LƯỢT 2: vẽ — giờ đã biết chắc bước nào cần tô đỏ =====
+  let html = "";
   for (let i = 0; i < cacBuocPheu.length; i++) {
     const b = cacBuocPheu[i];
     const soHienTai = t[b.khoa] || 0;
     const rongPhanTram = chia(soHienTai, dinh) * 100;
 
-    // Tỉ lệ chuyển đổi so với BƯỚC LIỀN TRƯỚC
-    let chuTiLe = "";
-    if (i > 0) {
-      const soTruoc = t[cacBuocPheu[i - 1].khoa] || 0;
-      const tiLe = chia(soHienTai, soTruoc) * 100;
-      chuTiLe = "→ " + soLe(tiLe, 1) + "%";
-
-      if (soTruoc > 0 && tiLe < tiLeTeNhat) {
-        tiLeTeNhat = tiLe;
-        buocTeNhat = { tu: cacBuocPheu[i - 1].ten, den: b.ten, tiLe: tiLe };
-      }
-    }
-
-    const kem = (i > 0 && tiLeTeNhat === chia(soHienTai, t[cacBuocPheu[i-1].khoa] || 0) * 100);
+    const chuTiLe = (cacTiLe[i] === null) ? "" : "→ " + soLe(cacTiLe[i], 1) + "%";
+    const kem = (i === viTriTeNhat);        // CHỈ MỘT bước duy nhất được tô đỏ
 
     html += '<div class="buoc">' +
               '<div class="ten">' + b.ten + '</div>' +
@@ -551,6 +629,16 @@ function veBang() {
 
   // Sắp xếp
   ds.sort(function (a, b) {
+    // Dòng KHÔNG CÓ ĐƠN HÀNG thì CAC vô nghĩa (= 0) -> luôn đẩy xuống cuối,
+    // tránh hiểu nhầm "CAC 0đ là rẻ nhất".
+    if (cotSapXep === "cac") {
+      const aTrong = !a.purchase;
+      const bTrong = !b.purchase;
+      if (aTrong && !bTrong) return 1;
+      if (!aTrong && bTrong) return -1;
+      if (aTrong && bTrong) return 0;
+    }
+
     const x = a[cotSapXep], y = b[cotSapXep];
     if (typeof x === "string") return giamDan ? y.localeCompare(x) : x.localeCompare(y);
     return giamDan ? y - x : x - y;
@@ -583,7 +671,13 @@ function veBang() {
       if (c.toMau === "roas") lop += d.roas >= ng.roasMin ? " soTot" : " soXau";
       if (c.toMau === "cac")  lop += (d.purchase > 0 && d.cac <= ng.cacMax) ? " soTot" : " soXau";
 
-      const giaTri = c.dinhDang ? c.dinhDang(d[c.khoa]) : d[c.khoa];
+      // Chưa có đơn nào thì hiện "—" thay vì "$0" (dễ tưởng là rẻ)
+      let giaTri;
+      if (c.khoa === "cac" && !d.purchase) {
+        giaTri = '<span title="Chưa có đơn hàng nào">—</span>';
+      } else {
+        giaTri = c.dinhDang ? c.dinhDang(d[c.khoa]) : d[c.khoa];
+      }
       than += '<td class="' + lop + '">' + giaTri + "</td>";
     });
     than += '<td><span class="nhanTT ' + dg.loai + '">' + dg.chu + "</span></td>";
@@ -596,6 +690,193 @@ function doiSapXep(khoa) {
   if (cotSapXep === khoa) { giamDan = !giamDan; }
   else { cotSapXep = khoa; giamDan = true; }
   veBang();
+}
+
+/* --------------------------------------------------------------
+   8b. SO SÁNH KỲ — BƯỚC 1: mới chỉ xác định và hiện 2 khoảng ngày
+   -------------------------------------------------------------- */
+
+// Lấy danh sách ngày có trong dữ liệu, sắp tăng dần, không trùng
+function danhSachNgay() {
+  const gio = {};
+  duLieuGoc.forEach(function (d) { gio[d.ngay] = true; });
+  return Object.keys(gio).sort();
+}
+
+// Chia khoảng ngày thành 2 kỳ bằng nhau
+// Độ dài mỗi kỳ lấy từ ô chọn; "auto" = chia đôi dữ liệu
+function chiaHaiKy() {
+  const ngay = danhSachNgay();
+  const chon = document.getElementById("oDoDaiKy").value;
+
+  let soNgayMoiKy;
+  if (chon === "auto") {
+    soNgayMoiKy = Math.floor(ngay.length / 2);
+  } else {
+    soNgayMoiKy = Number(chon);
+  }
+
+  // Cần ít nhất 1 ngày mỗi kỳ
+  if (soNgayMoiKy < 1) {
+    return { khongDu: true, canCo: 2, dangCo: ngay.length };
+  }
+
+  // Không đủ ngày cho độ dài đã chọn
+  if (ngay.length < soNgayMoiKy * 2) {
+    return { khongDu: true, canCo: soNgayMoiKy * 2, dangCo: ngay.length };
+  }
+
+  // Kỳ này = phần cuối, kỳ trước = phần liền trước đó
+  const kyNay   = ngay.slice(ngay.length - soNgayMoiKy);
+  const kyTruoc = ngay.slice(ngay.length - soNgayMoiKy * 2, ngay.length - soNgayMoiKy);
+
+  return {
+    khongDu: false,
+    soNgayMoiKy: soNgayMoiKy,
+    tongSoNgay: ngay.length,
+    tuDong: chon === "auto",
+    kyNay: kyNay,
+    kyTruoc: kyTruoc
+  };
+}
+
+// Cộng gộp dữ liệu CHỈ trong những ngày được liệt kê
+function gopTheoNgayChon(dsNgay) {
+  const trong = {};
+  dsNgay.forEach(function (n) { trong[n] = true; });
+
+  const t = {
+    chiPhi: 0, hienThi: 0, reach: 0, engage: 0, linkClick: 0,
+    pageView: 0, viewContent: 0, addToCart: 0, checkout: 0,
+    purchase: 0, doanhThu: 0
+  };
+  duLieuGoc.forEach(function (d) {
+    if (!trong[d.ngay]) return;              // ngày không thuộc kỳ -> bỏ qua
+    for (const k in t) { t[k] += (d[k] || 0); }
+  });
+  return tinhChiSo(t);
+}
+
+// Tính phần trăm thay đổi giữa hai giá trị
+// Trả về null khi không tính được (kỳ trước bằng 0)
+function phanTramDoi(moi, cu) {
+  if (!cu) return null;                      // chia cho 0 -> không tính được
+  return ((moi - cu) / cu) * 100;
+}
+
+// Gom kết quả so sánh của cả hai kỳ (dùng lại ở nhiều nơi)
+function ketQuaSoSanh() {
+  const ky = chiaHaiKy();
+  if (ky.khongDu) return null;
+  return {
+    ky: ky,
+    nay:   gopTheoNgayChon(ky.kyNay),
+    truoc: gopTheoNgayChon(ky.kyTruoc)
+  };
+}
+
+// Đổi "2026-07-13" thành "13/07"
+function ngayGon(chuoi) {
+  const p = String(chuoi).split("-");
+  if (p.length !== 3) return chuoi;      // dữ liệu lạ thì để nguyên
+  return p[2] + "/" + p[1];
+}
+
+// Ghép thành "13/07 – 15/07"
+function khoangNgay(ds) {
+  if (!ds || ds.length === 0) return "—";
+  if (ds.length === 1) return ngayGon(ds[0]);
+  return ngayGon(ds[0]) + " – " + ngayGon(ds[ds.length - 1]);
+}
+
+function veSoSanh() {
+  const khung = document.getElementById("khungSoSanh");
+  const kq = ketQuaSoSanh();
+
+  // Không đủ ngày -> báo rõ thay vì hiện số sai
+  if (!kq) {
+    const ky = chiaHaiKy();
+    khung.innerHTML =
+      '<div class="thieuNgay">⚠️ Không đủ dữ liệu cho độ dài kỳ đã chọn.<br>' +
+      'Cần <b>' + ky.canCo + ' ngày</b> nhưng dữ liệu chỉ có <b>' + ky.dangCo + ' ngày</b>.<br>' +
+      'Hãy chọn kỳ ngắn hơn, hoặc dùng "Chia đôi dữ liệu".</div>';
+    return;
+  }
+
+  const ky = kq.ky;
+
+  // Ghi chú khi chia đôi mà số ngày lẻ
+  let ghiChu = "";
+  if (ky.tuDong && ky.tongSoNgay % 2 === 1) {
+    ghiChu = '<p class="moTa" style="margin-top:12px">Dữ liệu có ' + ky.tongSoNgay +
+             ' ngày (số lẻ) nên ngày cũ nhất được bỏ ra để hai kỳ bằng nhau.</p>';
+  }
+
+  // Ba chỉ số chính, hiện kèm mức thay đổi
+  const chinh = [
+    { nhan: "Chi phí",   khoa: "chiPhi",   dd: tienUSD, huong: "trungTinh" },
+    { nhan: "Doanh thu", khoa: "doanhThu", dd: tienUSD, huong: "tot" },
+    { nhan: "ROAS",      khoa: "roas",     dd: function (v) { return soLe(v); }, huong: "tot" }
+  ];
+
+  let bangChinh = '<div class="hangThe" style="margin-top:16px">';
+  chinh.forEach(function (c) {
+    const moi = kq.nay[c.khoa];
+    const cu  = kq.truoc[c.khoa];
+    bangChinh +=
+      '<div class="theSo">' +
+        '<div class="nhan">' + c.nhan + '</div>' +
+        '<div class="giaTri">' + c.dd(moi) + '</div>' +
+        veMucDoi(moi, cu, c.huong, c.dd) +
+      '</div>';
+  });
+  bangChinh += "</div>";
+
+  khung.innerHTML =
+    '<div class="hangKy">' +
+      '<div class="oKy">' +
+        '<div class="nhanKy">Kỳ trước</div>' +
+        '<div class="khoangNgay">' + khoangNgay(ky.kyTruoc) + '</div>' +
+        '<div class="soNgay">' + ky.kyTruoc.length + ' ngày</div>' +
+      '</div>' +
+      '<div class="oKy kyNay">' +
+        '<div class="nhanKy">Kỳ này</div>' +
+        '<div class="khoangNgay">' + khoangNgay(ky.kyNay) + '</div>' +
+        '<div class="soNgay">' + ky.kyNay.length + ' ngày</div>' +
+      '</div>' +
+    '</div>' + bangChinh + ghiChu;
+}
+
+/* --------------------------------------------------------------
+   8c. VẼ MỨC THAY ĐỔI — mũi tên + màu theo ý nghĩa chỉ số
+   huong: "tot"       -> tăng là tốt (doanh thu, ROAS)
+          "xau"       -> tăng là xấu (CAC, CPC, CPM)
+          "trungTinh" -> tăng/giảm đều không tốt xấu (chi phí, hiển thị)
+   -------------------------------------------------------------- */
+function veMucDoi(moi, cu, huong, dinhDang) {
+  const pt = phanTramDoi(moi, cu);
+
+  // Kỳ trước bằng 0 -> không tính được phần trăm
+  if (pt === null) {
+    const chu = (moi > 0) ? "mới có ở kỳ này" : "cả hai kỳ đều 0";
+    return '<div class="doi trungTinh">— ' + chu + "</div>";
+  }
+
+  const tang = pt > 0;
+  const mui  = tang ? "↑" : (pt < 0 ? "↓" : "→");
+
+  // Quyết định màu
+  let lop = "trungTinh";
+  if (huong === "tot") lop = tang ? "tang-tot" : "giam-xau";
+  if (huong === "xau") lop = tang ? "tang-xau" : "giam-tot";
+  if (Math.abs(pt) < 0.05) lop = "trungTinh";   // gần như không đổi
+
+  const chuCu = dinhDang ? (" (kỳ trước " + dinhDang(cu) + ")") : "";
+
+  return '<div class="doi ' + lop + '">' +
+           mui + " " + soLe(Math.abs(pt), 1) + "%" +
+           '<span class="nhanKyTruoc">' + chuCu + "</span>" +
+         "</div>";
 }
 
 /* --------------------------------------------------------------
@@ -743,6 +1024,7 @@ function veBieuDo() {
    10. VẼ LẠI TOÀN BỘ — gọi hàm này sau mỗi thay đổi
    -------------------------------------------------------------- */
 function veLai() {
+  veSoSanh();
   veTheChiSo();
   veBieuDo();
   vePheu();
